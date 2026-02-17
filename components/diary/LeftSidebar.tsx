@@ -1,0 +1,168 @@
+"use client"
+
+import { motion } from "framer-motion"
+import { BookOpen, Calendar, Download, Upload, PanelLeftClose } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
+import { useDiaryStore } from "@/lib/store"
+import { exportToTxt } from "@/lib/exportTxt"
+
+export function LeftSidebar() {
+  const { 
+    leftSidebarOpen, 
+    setLeftSidebarOpen, 
+    setCurrentDate, 
+    metadata, 
+    noteContent,
+    isMobile 
+  } = useDiaryStore()
+
+  const exportData = () => {
+    const data = {
+      metadata,
+      notes: noteContent,
+      exportDate: new Date().toISOString(),
+      version: "1.0",
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `diario-export-${new Date().toISOString().split("T")[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const exportTxtData = () => {
+    const txt = exportToTxt(metadata, noteContent)
+    const blob = new Blob([txt], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `diario-${new Date().toISOString().split("T")[0]}.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const json = JSON.parse(e.target?.result as string)
+        if (json.metadata && json.notes) {
+          if (confirm("Esto reemplazará tus datos actuales. ¿Deseas continuar?")) {
+            useDiaryStore.setState({ metadata: json.metadata, noteContent: json.notes })
+            alert("Datos importados con éxito.")
+          }
+        } else {
+          alert("El archivo no tiene el formato correcto.")
+        }
+      } catch {
+        alert("Error al leer el archivo JSON.")
+      }
+    }
+    reader.readAsText(file)
+    event.target.value = ""
+  }
+
+  const handleGoToToday = () => {
+    setCurrentDate(new Date())
+    if (isMobile) setLeftSidebarOpen(false)
+  }
+
+  return (
+    <motion.aside
+      initial={{ width: 0, opacity: 0, x: isMobile ? -256 : 0 }}
+      animate={{
+        width: 256,
+        opacity: 1,
+        x: 0,
+        position: isMobile ? "fixed" : "relative",
+        zIndex: isMobile ? 50 : 0,
+        height: "100%",
+      }}
+      exit={{
+        width: 0,
+        opacity: 0,
+        x: isMobile ? -256 : 0,
+        transition: { duration: 0.2 },
+      }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="bg-sidebar border-r border-sidebar-border flex flex-col overflow-hidden shrink-0"
+    >
+      <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sidebar-foreground">
+          <BookOpen className="w-5 h-5" />
+          <h1 className="font-semibold text-lg">Mi Diario</h1>
+        </div>
+        <div className="flex items-center gap-1">
+          <ModeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLeftSidebarOpen(false)}
+            className="text-sidebar-foreground hover:bg-sidebar-accent"
+          >
+            <PanelLeftClose className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex-1 p-4 overflow-y-auto space-y-6">
+        <div className="space-y-2">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+            onClick={handleGoToToday}
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            Hoy
+          </Button>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-semibold text-sidebar-foreground/50 uppercase px-2">Datos</p>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+            onClick={exportData}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Exportar JSON
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+            onClick={exportTxtData}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Exportar TXT
+          </Button>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Importar JSON
+            </Button>
+            <input
+              type="file"
+              accept=".json"
+              onChange={importData}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              title="Importar archivo JSON"
+            />
+          </div>
+        </div>
+      </div>
+    </motion.aside>
+  )
+}
