@@ -56,16 +56,16 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 bun install
 
 # Development
-bun dev
+bun run dev
 
 # Build
-bun build
+bun run build
 
 # Lint
-bun lint
+bun run lint
 
 # Start production
-bun start
+bun run start
 ```
 
 ---
