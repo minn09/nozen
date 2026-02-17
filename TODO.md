@@ -1,111 +1,69 @@
-poder agregar atajos como moverse con las flechas entre dias
+## 🚀 Próximas Funcionalidades (Backlog)
 
-agregar control k
+### ⌨️ Navegación y Atajos
 
-en movil cuando me desplazo a la izquierda o derecha cambiar entre las fechas
+- [ ] **Atajos de Teclado (Desktop):**
+- [ ] Implementar navegación entre días con flechas de dirección (`←` / `→`).
+- [ ] Implementar `Ctrl + K` (Paleta de comandos o buscador rápido).
 
+- [ ] **Gestos (Mobile):**
+- [ ] Implementar _swipe_ (desplazamiento lateral) para cambiar entre fechas.
 
-## 🧾 Historia de usuario: Exportación optimizada en TXT (Journal / Agenda)
+### 🖼️ Multimedia
 
-**Como** usuario de la aplicación de agenda/journal
-**quiero** que mis datos se exporten en un formato TXT optimizado y legible
-**para** ahorrar espacio, facilitar backups, edición manual, uso con git y sincronización offline.
-
----
-
-### 🎯 Contexto
-
-Actualmente la aplicación exporta la información diaria en formato JSON, lo cual es correcto para APIs, pero ineficiente para almacenamiento local, lectura humana y control de versiones.
-Se busca introducir un **formato TXT estructurado**, compacto y reversible, manteniendo todas las funcionalidades actuales (notas, mood, check-ins, tags, etc.).
+- [ ] Sistema de subida de imágenes (definir si es almacenamiento local o en la nube).
 
 ---
 
-### ✅ Criterios de aceptación
+## 🏗️ En Desarrollo / Alta Prioridad
 
-* La app debe poder exportar los datos del journal en **formato TXT**
-* El formato debe:
+### 📄 Exportación Optimizada (TXT Format)
 
-  * Ser **legible por humanos**
-  * Ser **mucho más compacto que JSON**
-  * Mantener **toda la información actual**
-  * Ser **parseable de forma determinista** (TXT ⇄ JSON)
-* El export TXT debe incluir:
+_Transformar el sistema de persistencia de JSON a un formato legible y compacto._
 
-  * Metadata global (versión, fecha de exportación)
-  * Entradas agrupadas por día
-  * Nota principal del día
-  * Mood, energía y tags
-  * Check-ins de estado con hora y nota opcional
+**Criterios de Aceptación:**
+
+- [ ] Generación de metadata global (`@v=1.0`, `@export`).
+- [ ] Agrupación por día usando `# YYYY-MM-DD`.
+- [ ] Parseo determinista (Bidireccional: TXT ⇄ JSON).
+- [ ] Soporte para notas principales (`>`), estados (`~`) y tags.
+
+**Estado de la Tarea:**
+
+- [ ] Definir Parser/Serializer.
+- [ ] Implementar lógica de exportación manual.
+- [ ] **Refactor de Almacenamiento:** Mover de un solo archivo JSON a estructura de carpetas: `journal/YYYY/MM/DD.txt`.
 
 ---
 
-### 🧱 Formato TXT propuesto
+## 🛠️ Especificaciones Técnicas (Referencia)
 
-```txt
-@v=1.0
-@export=2026-01-01T22:29Z
+### Estándar del Formato TXT
 
-# 2026-01-01
-mood: excelente
-energy: -
-tags: -
+Para asegurar la legibilidad humana y el control de versiones (Git), se utiliza la siguiente sintaxis:
 
-> No tengo ganas de dormir
+| Símbolo | Significado     | Ejemplo              |
+| ------- | --------------- | -------------------- | -------- | ----------- |
+| `@`     | Metadata global | `@v=1.0`             |
+| `#`     | Cabecera de día | `# 2026-01-01`       |
+| `>`     | Nota principal  | `> Texto de la nota` |
+| `~`     | Check-in (hora) | `~ 17:24 igual`      |
+| `       | `               | Nota opcional        | `~ 17:27 | comentario` |
+| `-`     | Valor nulo      | `energy: -`          |
 
-~ 17:24 peor
-~ 17:24 igual
-~ 17:24 mejor
-~ 17:27 igual | no paso nada interesante
+### Arquitectura de Archivos Propuesta
+
+```text
+journal/
+ └─ YYYY/
+     └─ MM/
+         └─ DD.txt
+
 ```
 
 ---
 
-### 🧠 Reglas de formato
+## ✅ Completado
 
-* `@` → metadata global
-* `#` → día
-* `>` → nota principal del día
-* `~` → check-in de estado
-* `|` → separador para nota opcional
-* `-` → valor nulo o vacío
-
----
-
-### 🔧 Consideraciones técnicas
-
-* El formato TXT será usado para:
-
-  * Almacenamiento local
-  * Exportación
-  * Backup
-* JSON se mantiene solo para:
-
-  * Sync
-  * API
-  * Comunicación entre servicios
-* Posible organización futura:
-
-  ```
-  journal/
-   └─ 2026/
-      └─ 01/
-         └─ 01.txt
-  ```
-
----
-
-### 📦 Valor agregado
-
-* Menor uso de espacio
-* Mejor experiencia offline
-* Mejor compatibilidad con git
-* Alineado con una agenda tipo física
-* Base sólida para futuras features (diff por día, sync incremental)
-
----
-
-Si quieres, en el siguiente paso puedo:
-
-* dividir esta historia en **subtasks**
-* agregar **definición de terminado (DoD)**
-* o adaptarla a un formato más corto tipo *Atomic Task* para tu `todo.md` minimalista
+- [x] Definición inicial del formato TXT.
+- [x] Identificación de ineficiencias del formato JSON para backups.
