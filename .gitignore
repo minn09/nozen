@@ -26,3 +26,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+
+# AI Instructions
+CLAUDE.md
+GEMINI.md
+.agents/
+.github/copilot-instructions.md
+
+# AI Skills symlinks
+.claude/skills
+.codex/skills
+.github/skills
+.gemini/skills
