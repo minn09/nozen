@@ -1,21 +1,25 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { BookOpen, Calendar, Download, Upload, PanelLeftClose } from "lucide-react"
+import { BookOpen, Calendar, Download, Upload, PanelLeftClose, Plus, File } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useDiaryStore } from "@/lib/store"
 import { exportToTxt } from "@/lib/exportTxt"
+import { Separator } from "../ui/separator"
+import { useNoteStore } from "@/store/note"
 
 export function LeftSidebar() {
-  const { 
-    leftSidebarOpen, 
-    setLeftSidebarOpen, 
-    setCurrentDate, 
-    metadata, 
+  const {
+    leftSidebarOpen,
+    setLeftSidebarOpen,
+    setCurrentDate,
+    metadata,
     noteContent,
-    isMobile 
+    isMobile
   } = useDiaryStore()
+
+  const { notes, newNote: newNoteStore } = useNoteStore()
 
   const exportData = () => {
     const data = {
@@ -126,6 +130,33 @@ export function LeftSidebar() {
             Hoy
           </Button>
         </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-semibold text-sidebar-foreground/50 uppercase flex items-center gap-2">Notas
+            <Button
+              variant="ghost"
+              className="text-sidebar-foreground hover:bg-sidebar-accent"
+              onClick={() => newNoteStore()}
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </p>
+          <div className="flex items-start justify-start flex-col gap-2">
+            {Object.values(notes).map((note) => (
+              <Button
+                key={note.id}
+                variant="ghost"
+                className="text-sidebar-foreground hover:bg-sidebar-accent"
+                onClick={() => {/* setCurrentNote(note.id) */ }}
+              >
+                <File className="w-4 h-4 mr-2" />
+                {note.title}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <Separator className="my-4" />
 
         <div className="space-y-2">
           <p className="text-xs font-semibold text-sidebar-foreground/50 uppercase px-2">Datos</p>
