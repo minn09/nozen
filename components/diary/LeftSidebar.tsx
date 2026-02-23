@@ -6,18 +6,22 @@ import { BookOpen, Calendar, Download, Upload, PanelLeftClose, Plus, File, Trash
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useDiaryStore } from "@/lib/store"
-import { exportToTxt } from "@/lib/exportTxt"
+import { useUIStore } from "@/lib/uiStore"
 import { Separator } from "../ui/separator"
 import { useNoteStore } from "@/store/note"
+import { exportToJson, exportToTxtFile, importFromJson } from "@/lib/exportImport"
 
 export function LeftSidebar() {
   const {
     leftSidebarOpen,
     setLeftSidebarOpen,
+    isMobile
+  } = useUIStore()
+
+  const {
     setCurrentDate,
     metadata,
     noteContent,
-    isMobile
   } = useDiaryStore()
 
   const { notes, activeNoteId, setActiveNote, newNote: newNoteStore, deleteNote, loadFromStorage } = useNoteStore()
@@ -38,58 +42,28 @@ export function LeftSidebar() {
     }
   }
 
-  const exportData = () => {
-    const data = {
-      metadata,
-      notes: noteContent,
-      exportDate: new Date().toISOString(),
-      version: "1.0",
-    }
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `diario-export-${new Date().toISOString().split("T")[0]}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+  const handleExportJson = () => {
+    exportToJson(metadata, noteContent)
   }
 
-  const exportTxtData = () => {
-    const txt = exportToTxt(metadata, noteContent)
-    const blob = new Blob([txt], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `diario-${new Date().toISOString().split("T")[0]}.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+  const handleExportTxt = () => {
+    exportToTxtFile(metadata, noteContent)
   }
 
-  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      try {
-        const json = JSON.parse(e.target?.result as string)
-        if (json.metadata && json.notes) {
-          if (confirm("Esto reemplazará tus datos actuales. ¿Deseas continuar?")) {
-            useDiaryStore.setState({ metadata: json.metadata, noteContent: json.notes })
-            alert("Datos importados con éxito.")
-          }
-        } else {
-          alert("El archivo no tiene el formato correcto.")
+    importFromJson(
+      file,
+      (data) => {
+        if (confirm("Esto reemplazará tus datos actuales. ¿Deseas continuar?")) {
+          useDiaryStore.setState({ metadata: data.metadata, noteContent: data.notes })
+          alert("Datos importados con éxito.")
         }
-      } catch {
-        alert("Error al leer el archivo JSON.")
-      }
-    }
-    reader.readAsText(file)
+      },
+      (error) => alert(error)
+    )
     event.target.value = ""
   }
 
@@ -194,7 +168,7 @@ export function LeftSidebar() {
           <Button
             variant="ghost"
             className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-            onClick={exportData}
+            onClick={handleExportJson}
           >
             <Download className="w-4 h-4 mr-2" />
             Exportar JSON
@@ -202,7 +176,7 @@ export function LeftSidebar() {
           <Button
             variant="ghost"
             className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-            onClick={exportTxtData}
+            onClick={handleExportTxt}
           >
             <Download className="w-4 h-4 mr-2" />
             Exportar TXT
@@ -218,7 +192,7 @@ export function LeftSidebar() {
             <input
               type="file"
               accept=".json"
-              onChange={importData}
+              onChange={handleImportJson}
               className="absolute inset-0 opacity-0 cursor-pointer"
               title="Importar archivo JSON"
             />

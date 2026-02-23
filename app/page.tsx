@@ -4,6 +4,7 @@ import { useEffect, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useDiaryStore } from "@/lib/store"
+import { useUIStore } from "@/lib/uiStore"
 import { LeftSidebar } from "@/components/diary/LeftSidebar"
 import { RightSidebar } from "@/components/diary/RightSidebar"
 import { DateNavigation } from "@/components/diary/DateNavigation"
@@ -19,6 +20,9 @@ export default function AgendaPage() {
     setLeftSidebarOpen,
     setRightSidebarOpen,
     setIsMobile,
+  } = useUIStore()
+
+  const {
     loadFromStorage,
     saveMetadataToStorage,
     saveNotesToStorage,
