@@ -9,7 +9,8 @@ import { useDiaryStore } from "@/lib/store"
 import { useUIStore } from "@/lib/uiStore"
 import { Separator } from "../ui/separator"
 import { useNoteStore } from "@/store/note"
-import { exportToJson, exportToTxtFile, importFromJson } from "@/lib/exportImport"
+import { exportToJson, exportToTxtFile } from "@/lib/services/export"
+import { importFromJson } from "@/lib/services/import"
 
 export function LeftSidebar() {
   const {
