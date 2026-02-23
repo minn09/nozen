@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, PanelLeftOpen, PanelRightOpen, ArrowLeft } f
 import { Button } from "@/components/ui/button"
 import { useDiaryStore } from "@/lib/store/diary"
 import { useUIStore } from "@/lib/store/ui"
-import { useNoteStore } from "@/store/note"
+import { useNoteStore } from "@/lib/store/note"
 import { formatSpanishDate, getDateKey } from "@/lib/utils/date"
 
 export function DateNavigation() {

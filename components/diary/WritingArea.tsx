@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { useDiaryStore } from "@/lib/store/diary"
-import { useNoteStore } from "@/store/note"
+import { useNoteStore } from "@/lib/store/note"
 import { getDateKey } from "@/lib/utils/date"
 
 export function WritingArea() {

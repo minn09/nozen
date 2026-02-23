@@ -1,5 +1,5 @@
 import type { DayMetadata } from "@/types/diary"
-import { exportToTxt } from "../exportTxt"
+import { exportToTxt } from "./exportTxt"
 
 export type MetadataRecord = Record<string, DayMetadata>
 export type NotesRecord = Record<string, string>
