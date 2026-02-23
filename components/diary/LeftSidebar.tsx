@@ -1,7 +1,8 @@
 "use client"
 
+import { useEffect } from "react"
 import { motion } from "framer-motion"
-import { BookOpen, Calendar, Download, Upload, PanelLeftClose, Plus, File } from "lucide-react"
+import { BookOpen, Calendar, Download, Upload, PanelLeftClose, Plus, File, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useDiaryStore } from "@/lib/store"
@@ -19,7 +20,23 @@ export function LeftSidebar() {
     isMobile
   } = useDiaryStore()
 
-  const { notes, newNote: newNoteStore } = useNoteStore()
+  const { notes, activeNoteId, setActiveNote, newNote: newNoteStore, deleteNote, loadFromStorage } = useNoteStore()
+
+  useEffect(() => {
+    loadFromStorage()
+  }, [loadFromStorage])
+
+  const handleNoteClick = (noteId: string) => {
+    setActiveNote(noteId)
+    if (isMobile) setLeftSidebarOpen(false)
+  }
+
+  const handleDeleteNote = (e: React.MouseEvent, noteId: string) => {
+    e.stopPropagation()
+    if (confirm("¿Eliminar esta nota?")) {
+      deleteNote(noteId)
+    }
+  }
 
   const exportData = () => {
     const data = {
@@ -141,17 +158,31 @@ export function LeftSidebar() {
               <Plus className="w-4 h-4" />
             </Button>
           </p>
-          <div className="flex items-start justify-start flex-col gap-2">
+          <div className="flex items-start justify-start flex-col gap-1">
             {Object.values(notes).map((note) => (
-              <Button
+              <div
                 key={note.id}
-                variant="ghost"
-                className="text-sidebar-foreground hover:bg-sidebar-accent"
-                onClick={() => {/* setCurrentNote(note.id) */ }}
+                className={`flex items-center gap-1 w-full group ${
+                  activeNoteId === note.id ? "bg-accent rounded-md" : ""
+                }`}
               >
-                <File className="w-4 h-4 mr-2" />
-                {note.title}
-              </Button>
+                <Button
+                  variant="ghost"
+                  className="flex-1 justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+                  onClick={() => handleNoteClick(note.id)}
+                >
+                  <File className="w-4 h-4 mr-2" />
+                  <span className="truncate">{note.title}</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="opacity-0 group-hover:opacity-100 text-sidebar-foreground hover:bg-sidebar-accent h-8 w-8"
+                  onClick={(e) => handleDeleteNote(e, note.id)}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
             ))}
           </div>
         </div>
