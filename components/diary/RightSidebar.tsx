@@ -125,7 +125,7 @@ export function RightSidebar() {
                     </div>
                     {check.note && (
                       <p className="text-muted-foreground italic ml-2 border-l-2 border-primary/20 pl-2">
-                        "{check.note}"
+                        &ldquo;{check.note}&rdquo;
                       </p>
                     )}
                   </div>
