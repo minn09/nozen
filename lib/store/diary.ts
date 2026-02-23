@@ -1,13 +1,13 @@
 import { create } from "zustand"
 import type { DayMetadata, MoodType, StatusChange } from "@/types/diary"
-import { getDateKey, getTimeString } from "./utils/date"
-import { useUIStore } from "./uiStore"
+import { getDateKey, getTimeString } from "../utils/date"
+import { useUIStore } from "./ui"
 import {
   loadMetadataFromStorage,
   loadNotesFromStorage,
   saveMetadataToStorage,
   saveNotesToStorage,
-} from "./services/storage"
+} from "../services/storage"
 
 interface DiaryState {
   currentDate: Date

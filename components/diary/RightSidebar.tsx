@@ -5,9 +5,9 @@ import { TrendingUp, TrendingDown, Minus, PanelRightClose } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { useDiaryStore } from "@/lib/store"
-import { useUIStore } from "@/lib/uiStore"
-import { MOOD_OPTIONS } from "@/lib/constants"
+import { useDiaryStore } from "@/lib/store/diary"
+import { useUIStore } from "@/lib/store/ui"
+import { MOOD_OPTIONS } from "@/lib/constants/diary"
 
 export function RightSidebar() {
   const { 

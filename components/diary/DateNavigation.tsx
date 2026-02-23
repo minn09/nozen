@@ -3,10 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, PanelLeftOpen, PanelRightOpen, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useDiaryStore } from "@/lib/store"
-import { useUIStore } from "@/lib/uiStore"
+import { useDiaryStore } from "@/lib/store/diary"
+import { useUIStore } from "@/lib/store/ui"
 import { useNoteStore } from "@/store/note"
-import { formatSpanishDate, getDateKey } from "@/lib/constants"
+import { formatSpanishDate, getDateKey } from "@/lib/utils/date"
 
 export function DateNavigation() {
   const { 
