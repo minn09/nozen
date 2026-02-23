@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useDiaryStore } from "@/lib/store"
+import { useUIStore } from "@/lib/uiStore"
 
 export function MoodDialog() {
+  const { isMoodDialogOpen, setIsMoodDialogOpen } = useUIStore()
+
   const { 
-    isMoodDialogOpen, 
-    setIsMoodDialogOpen, 
     pendingStatus, 
     statusNote, 
     setStatusNote,

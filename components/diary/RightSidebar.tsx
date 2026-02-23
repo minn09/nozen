@@ -6,16 +6,20 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useDiaryStore } from "@/lib/store"
+import { useUIStore } from "@/lib/uiStore"
 import { MOOD_OPTIONS } from "@/lib/constants"
 
 export function RightSidebar() {
   const { 
     rightSidebarOpen, 
     setRightSidebarOpen, 
+    isMobile 
+  } = useUIStore()
+
+  const { 
     getCurrentMetadata,
     updateMood,
     handleStatusClick,
-    isMobile 
   } = useDiaryStore()
 
   const metadata = getCurrentMetadata()

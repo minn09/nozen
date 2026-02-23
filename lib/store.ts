@@ -1,28 +1,21 @@
 import { create } from "zustand"
 import type { DayMetadata, MoodType, StatusChange } from "@/types/diary"
 import { STORAGE_KEYS, getDateKey, getTimeString } from "./constants"
+import { useUIStore } from "./uiStore"
 
 interface DiaryState {
   currentDate: Date
   direction: number
-  leftSidebarOpen: boolean
-  rightSidebarOpen: boolean
-  isMoodDialogOpen: boolean
   pendingStatus: StatusChange
   statusNote: string
   metadata: Record<string, DayMetadata>
   noteContent: Record<string, string>
-  isMobile: boolean
 
   setCurrentDate: (date: Date) => void
   setDirection: (dir: number) => void
   navigateDay: (delta: number) => void
-  setLeftSidebarOpen: (open: boolean) => void
-  setRightSidebarOpen: (open: boolean) => void
-  setIsMoodDialogOpen: (open: boolean) => void
   setPendingStatus: (status: StatusChange) => void
   setStatusNote: (note: string) => void
-  setIsMobile: (mobile: boolean) => void
 
   getCurrentMetadata: () => DayMetadata
 
@@ -48,14 +41,10 @@ const getDefaultMetadata = (): DayMetadata => ({
 export const useDiaryStore = create<DiaryState>((set, get) => ({
   currentDate: new Date(),
   direction: 0,
-  leftSidebarOpen: true,
-  rightSidebarOpen: true,
-  isMoodDialogOpen: false,
   pendingStatus: null,
   statusNote: "",
   metadata: {},
   noteContent: {},
-  isMobile: false,
 
   setCurrentDate: (date) => set({ currentDate: date }),
   setDirection: (dir) => set({ direction: dir }),
@@ -70,12 +59,8 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
       ),
     })),
 
-  setLeftSidebarOpen: (open) => set({ leftSidebarOpen: open }),
-  setRightSidebarOpen: (open) => set({ rightSidebarOpen: open }),
-  setIsMoodDialogOpen: (open) => set({ isMoodDialogOpen: open }),
   setPendingStatus: (status) => set({ pendingStatus: status }),
   setStatusNote: (note) => set({ statusNote: note }),
-  setIsMobile: (mobile) => set({ isMobile: mobile, leftSidebarOpen: !mobile, rightSidebarOpen: !mobile }),
 
   getCurrentMetadata: () => {
     const { currentDate, metadata } = get()
@@ -103,6 +88,8 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
       const key = getDateKey(state.currentDate)
       const current = state.metadata[key] || getDefaultMetadata()
 
+      useUIStore.getState().setIsMoodDialogOpen(false)
+
       return {
         metadata: {
           ...state.metadata,
@@ -114,18 +101,15 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
             ],
           },
         },
-        isMoodDialogOpen: false,
         pendingStatus: null,
         statusNote: "",
       }
     }),
 
-  handleStatusClick: (status) =>
-    set({
-      pendingStatus: status,
-      statusNote: "",
-      isMoodDialogOpen: true,
-    }),
+  handleStatusClick: (status) => {
+    set({ pendingStatus: status, statusNote: "" })
+    useUIStore.getState().setIsMoodDialogOpen(true)
+  },
 
   setNoteContent: (content) => set({ noteContent: content }),
 

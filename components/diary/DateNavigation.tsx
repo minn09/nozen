@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, PanelLeftOpen, PanelRightOpen, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useDiaryStore } from "@/lib/store"
+import { useUIStore } from "@/lib/uiStore"
 import { useNoteStore } from "@/store/note"
 import { formatSpanishDate, getDateKey } from "@/lib/constants"
 
@@ -12,11 +13,14 @@ export function DateNavigation() {
     currentDate, 
     direction, 
     navigateDay, 
+  } = useDiaryStore()
+
+  const { 
     leftSidebarOpen, 
     rightSidebarOpen,
     setLeftSidebarOpen,
     setRightSidebarOpen 
-  } = useDiaryStore()
+  } = useUIStore()
 
   const { activeNoteId, setActiveNote, notes } = useNoteStore()
 
