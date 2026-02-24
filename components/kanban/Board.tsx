@@ -72,7 +72,7 @@ export function Board() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-4 p-4 overflow-x-auto h-full">
+      <div className="flex gap-4 p-4 overflow-x-auto h-full justify-center">
         {lists.map((list) => {
           const tasks = list.taskIds.map((id) => tasksMap[id]).filter(Boolean)
           return <Column key={list.id} list={list} tasks={tasks} />
