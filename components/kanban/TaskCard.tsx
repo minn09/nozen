@@ -11,10 +11,10 @@ interface TaskCardProps {
 }
 
 const priorityColors = {
-  baja: "bg-green-100 border-green-300",
-  media: "bg-yellow-100 border-yellow-300",
-  alta: "bg-orange-100 border-orange-300",
-  urgente: "bg-red-100 border-red-300",
+  baja: "bg-green-500/10 border-green-500/30 dark:bg-green-500/20 dark:border-green-500/40",
+  media: "bg-blue-500/10 border-blue-500/30 dark:bg-blue-500/20 dark:border-blue-500/40",
+  alta: "bg-orange-500/10 border-orange-500/30 dark:bg-orange-500/20 dark:border-orange-500/40",
+  urgente: "bg-red-500/10 border-red-500/30 dark:bg-red-500/20 dark:border-red-500/40",
 }
 
 export function TaskCard({ task }: TaskCardProps) {
@@ -54,14 +54,14 @@ export function TaskCard({ task }: TaskCardProps) {
         >
           <GripVertical className="w-4 h-4 text-muted-foreground" />
         </button>
-        
+
         <button
           onClick={() => toggleTaskComplete(task.id)}
           className={`
             mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center
             transition-colors flex-shrink-0
-            ${task.completedAt 
-              ? "bg-green-500 border-green-500 text-white" 
+            ${task.completedAt
+              ? "bg-green-500 border-green-500 text-white"
               : "border-border hover:border-primary"
             }
           `}
@@ -73,7 +73,7 @@ export function TaskCard({ task }: TaskCardProps) {
           <p className={`text-sm break-words ${task.completedAt ? "line-through text-muted-foreground" : ""}`}>
             {task.content}
           </p>
-          
+
           {task.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {task.tags.map((tag) => (
