@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Header } from "@/components/Header"
 
 const inter = Geist({
   subsets: ["latin"],
@@ -83,8 +85,6 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-import { ThemeProvider } from "@/components/theme-provider"
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -96,13 +96,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="font-sans antialiased min-h-screen flex bg-background text-foreground">
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
           {children}
           <Analytics />
         </ThemeProvider>
