@@ -16,6 +16,7 @@ export default function TaskDetailPage() {
 
   const tasks = useTaskStore((s) => s.tasks)
   const lists = useTaskStore((s) => s.lists)
+  const projects = useTaskStore((s) => s.projects)
   const updateTask = useTaskStore((s) => s.updateTask)
   const deleteTask = useTaskStore((s) => s.deleteTask)
   const toggleTaskComplete = useTaskStore((s) => s.toggleTaskComplete)
@@ -35,6 +36,9 @@ export default function TaskDetailPage() {
       </div>
     )
   }
+
+  const project = task.projectId ? projects.find((p) => p.id === task.projectId) : null
+  const list = lists.find((l) => l.id === task.listId)
 
   const handleSave = () => {
     updateTask(taskId, { content })
@@ -99,6 +103,28 @@ export default function TaskDetailPage() {
               className="flex-1 text-xl p-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-primary"
               rows={3}
             />
+          </div>
+
+          <div className="flex gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Proyecto</label>
+              {project ? (
+                <Link
+                  href={`/projects/${project.id}`}
+                  className="px-3 py-1 rounded bg-primary/10 text-primary hover:bg-primary/20 inline-block"
+                >
+                  {project.name}
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">Sin proyecto</span>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Lista</label>
+              <span className="px-3 py-1 rounded bg-muted inline-block">
+                {list?.name || "Lista no encontrada"}
+              </span>
+            </div>
           </div>
 
           <div>

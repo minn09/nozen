@@ -33,6 +33,9 @@ interface TaskBoardState {
   updateList: (listId: string, updates: Partial<List>) => void
   deleteList: (listId: string) => void
 
+  updateProject: (projectId: string, updates: Partial<Project>) => void
+  deleteProject: (projectId: string) => void
+
   getTasksByList: (listId: string) => Task[]
   getListsByProject: (projectId: string) => List[]
   getProjectsByArea: (areaId: string) => Project[]
@@ -222,6 +225,33 @@ export const useTaskStore = create<TaskBoardState>()(
           })
           return {
             lists: state.lists.filter((l) => l.id !== listId),
+            tasks: remainingTasks,
+          }
+        }),
+
+      updateProject: (projectId, updates) =>
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId ? { ...p, ...updates } : p
+          ),
+        })),
+
+      deleteProject: (projectId) =>
+        set((state) => {
+          const projectTasks = Object.values(state.tasks).filter((t) => t.projectId === projectId)
+          const projectTaskIds = projectTasks.map((t) => t.id)
+          const remainingTasks: Record<string, Task> = {}
+          Object.entries(state.tasks).forEach(([id, task]) => {
+            if (!projectTaskIds.includes(id)) {
+              remainingTasks[id] = task
+            }
+          })
+          return {
+            projects: state.projects.filter((p) => p.id !== projectId),
+            areas: state.areas.map((a) => ({
+              ...a,
+              projectIds: a.projectIds.filter((id) => id !== projectId),
+            })),
             tasks: remainingTasks,
           }
         }),

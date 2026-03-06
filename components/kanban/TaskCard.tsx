@@ -20,6 +20,7 @@ const priorityColors = {
 export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
   const toggleTaskComplete = useTaskStore((s) => s.toggleTaskComplete)
   const deleteTask = useTaskStore((s) => s.deleteTask)
+  const projects = useTaskStore((s) => s.projects)
 
   const {
     attributes,
@@ -33,9 +34,10 @@ export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: transition ?? "transform 150ms ease",
-    // La card original se vuelve ghost mientras arrastra
     opacity: isDragging ? 0 : 1,
   }
+
+  const project = task.projectId ? projects.find((p) => p.id === task.projectId) : null
 
   return (
     <div
@@ -67,6 +69,11 @@ export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
           {task.completedAt && <Check className="w-3 h-3" />}
         </button>
         <div className="flex-1 min-w-0">
+          {project && (
+            <span className="text-xs text-primary font-medium">
+              {project.name}
+            </span>
+          )}
           <p className={`text-sm break-words ${task.completedAt ? "line-through text-muted-foreground" : ""}`}>
             {task.content}
           </p>

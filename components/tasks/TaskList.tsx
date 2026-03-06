@@ -82,9 +82,10 @@ export function TaskList({ tasks, projects, lists }: TaskListProps) {
       {filteredTasks.map((task) => {
         const projectName = getProjectName(task.projectId)
         const listName = getListName(task.listId)
+        const isHighlighted = projectId && task.projectId === projectId
 
         return (
-          <div key={task.id} className="flex items-center gap-2">
+          <div key={task.id} className={`flex items-center gap-2 ${isHighlighted ? "ring-2 ring-primary ring-offset-1 rounded-lg" : ""}`}>
             <div className="flex-1">
               <Link href={`/lists/${task.listId}/tasks/${task.id}`}>
                 <TaskCard task={task} />
@@ -92,7 +93,9 @@ export function TaskList({ tasks, projects, lists }: TaskListProps) {
             </div>
             <div className="text-xs text-muted-foreground whitespace-nowrap">
               {projectName && (
-                <span className="px-2 py-1 bg-muted rounded">+{projectName}</span>
+                <span className={`px-2 py-1 rounded ${isHighlighted ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                  {projectName}
+                </span>
               )}
               {listName && (
                 <span className="px-2 py-1 bg-muted rounded ml-1">{listName}</span>

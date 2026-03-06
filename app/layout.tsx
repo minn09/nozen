@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster as SonnerToaster } from "sonner"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/Header"
@@ -85,6 +86,10 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
+function ClientToaster() {
+  return <SonnerToaster position="top-right" />
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -105,6 +110,7 @@ export default function RootLayout({
         >
           <Header />
           {children}
+          <ClientToaster />
           <Analytics />
         </ThemeProvider>
       </body>

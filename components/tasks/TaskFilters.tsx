@@ -2,6 +2,13 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import type { Area, Project, List, Priority } from "@/lib/types/task"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface TaskFiltersProps {
   areas: Area[]
@@ -21,9 +28,9 @@ export function TaskFilters({ areas, projects, lists, tags }: TaskFiltersProps) 
   const currentTag = searchParams.get("tag")
   const isToday = searchParams.get("today") === "true"
 
-  const updateFilter = (key: string, value: string | null) => {
+  const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (value) {
+    if (value && value !== "__all__") {
       params.set(key, value)
     } else {
       params.delete(key)
@@ -75,83 +82,88 @@ export function TaskFilters({ areas, projects, lists, tags }: TaskFiltersProps) 
 
       <div>
         <h3 className="font-medium mb-2">Área</h3>
-        <select
-          value={currentArea || ""}
-          onChange={(e) => updateFilter("area", e.target.value || null)}
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Todas las áreas</option>
-          {areas.map((area) => (
-            <option key={area.id} value={area.id}>
-              {area.name}
-            </option>
-          ))}
-        </select>
+        <Select value={currentArea || "__all__"} onValueChange={(v) => updateFilter("area", v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todas las áreas" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Todas las áreas</SelectItem>
+            {areas.map((area) => (
+              <SelectItem key={area.id} value={area.id}>
+                {area.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
         <h3 className="font-medium mb-2">Proyecto</h3>
-        <select
-          value={currentProject || ""}
-          onChange={(e) => updateFilter("project", e.target.value || null)}
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Todos los proyectos</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
+        <Select value={currentProject || "__all__"} onValueChange={(v) => updateFilter("project", v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todos los proyectos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Todos los proyectos</SelectItem>
+            {projects.map((project) => (
+              <SelectItem key={project.id} value={project.id}>
+                {project.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
         <h3 className="font-medium mb-2">Estado</h3>
-        <select
-          value={currentStatus || ""}
-          onChange={(e) => updateFilter("status", e.target.value || null)}
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Todos los estados</option>
-          {lists.map((list) => (
-            <option key={list.id} value={list.id}>
-              {list.name}
-            </option>
-          ))}
-        </select>
+        <Select value={currentStatus || "__all__"} onValueChange={(v) => updateFilter("status", v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todos los estados" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Todos los estados</SelectItem>
+            {lists.map((list) => (
+              <SelectItem key={list.id} value={list.id}>
+                {list.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
         <h3 className="font-medium mb-2">Prioridad</h3>
-        <select
-          value={currentPriority || ""}
-          onChange={(e) => updateFilter("priority", e.target.value || null)}
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Todas las prioridades</option>
-          {priorities.map((p) => (
-            <option key={p} value={p}>
-              {p.charAt(0).toUpperCase() + p.slice(1)}
-            </option>
-          ))}
-        </select>
+        <Select value={currentPriority || "__all__"} onValueChange={(v) => updateFilter("priority", v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todas las prioridades" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Todas las prioridades</SelectItem>
+            {priorities.map((p) => (
+              <SelectItem key={p} value={p}>
+                {p.charAt(0).toUpperCase() + p.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {tags.length > 0 && (
         <div>
           <h3 className="font-medium mb-2">Etiqueta</h3>
-          <select
-            value={currentTag || ""}
-            onChange={(e) => updateFilter("tag", e.target.value || null)}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">Todas las etiquetas</option>
-            {tags.map((tag) => (
-              <option key={tag} value={tag}>
-                #{tag}
-              </option>
-            ))}
-          </select>
+          <Select value={currentTag || "__all__"} onValueChange={(v) => updateFilter("tag", v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todas las etiquetas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">Todas las etiquetas</SelectItem>
+              {tags.map((tag) => (
+                <SelectItem key={tag} value={tag}>
+                  #{tag}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
     </div>

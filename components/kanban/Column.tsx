@@ -1,10 +1,12 @@
 "use client"
 import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { Plus } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 import { TaskCard } from "./TaskCard"
 import { useTaskStore } from "@/lib/store/task"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { List, Task } from "@/lib/types/task"
 
 interface ColumnProps {
@@ -16,6 +18,7 @@ interface ColumnProps {
 export function Column({ list, tasks, isDragging }: ColumnProps) {
   const createTask = useTaskStore((s) => s.createTask)
   const updateList = useTaskStore((s) => s.updateList)
+  const deleteList = useTaskStore((s) => s.deleteList)
   const [isAdding, setIsAdding] = useState(false)
   const [newTaskContent, setNewTaskContent] = useState("")
 
@@ -38,17 +41,36 @@ export function Column({ list, tasks, isDragging }: ColumnProps) {
     }
   }
 
+  const handleDelete = () => {
+    deleteList(list.id)
+    toast.success(`Lista "${list.name}" eliminada`)
+  }
+
   return (
-    <div className="flex flex-col w-72 flex-shrink-0">
+    <div className="group flex flex-col w-72 flex-shrink-0">
       <div className="flex items-center justify-between p-2 mb-2">
         <input
           value={list.name}
           onChange={(e) => updateList(list.id, { name: e.target.value })}
           className="font-semibold bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
         />
-        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-          {tasks.length}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+            {tasks.length}
+          </span>
+          <ConfirmDialog
+            title="Eliminar lista"
+            description={`¿Estás seguro de eliminar "${list.name}" y todas sus tareas? Esta acción no se puede deshacer.`}
+            onConfirm={handleDelete}
+          >
+            <button
+              className="p-1 text-muted-foreground hover:text-destructive rounded opacity-0 group-hover:opacity-100 transition-opacity"
+              title="Eliminar lista"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </ConfirmDialog>
+        </div>
       </div>
 
       <div

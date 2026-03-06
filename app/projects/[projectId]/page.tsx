@@ -2,7 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Plus } from "lucide-react"
+import { useState } from "react"
 import { useTaskStore } from "@/lib/store/task"
 import { TaskCard } from "@/components/kanban/TaskCard"
 
@@ -14,8 +15,18 @@ export default function ProjectDetailPage() {
   const projects = useTaskStore((s) => s.projects)
   const lists = useTaskStore((s) => s.lists)
   const tasks = useTaskStore((s) => s.tasks)
+  const createTask = useTaskStore((s) => s.createTask)
+  const updateProject = useTaskStore((s) => s.updateProject)
+
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [projectName, setProjectName] = useState(() => {
+    const project = projects.find((p) => p.id === projectId)
+    return project?.name ?? ""
+  })
+  const [newTaskContent, setNewTaskContent] = useState("")
 
   const project = projects.find((p) => p.id === projectId)
+  const defaultList = lists[0]
 
   if (!project) {
     return (
@@ -28,9 +39,34 @@ export default function ProjectDetailPage() {
     )
   }
 
-  const projectLists = lists.filter((l) => l.projectId === projectId)
-  const projectTaskIds = projectLists.flatMap((l) => l.taskIds)
-  const projectTasks = projectTaskIds.map((id) => tasks[id]).filter(Boolean)
+  const projectTasks = Object.values(tasks).filter((t) => t.projectId === projectId)
+
+  const handleUpdateName = () => {
+    if (projectName.trim() && projectName !== project.name) {
+      updateProject(projectId, { name: projectName.trim() })
+    }
+    setIsEditingName(false)
+  }
+
+  const handleCreateTask = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newTaskContent.trim() || !defaultList) return
+    createTask(defaultList.id, newTaskContent.trim(), projectId)
+    setNewTaskContent("")
+  }
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProjectName(e.target.value)
+  }
+
+  const handleNameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleUpdateName()
+    } else if (e.key === "Escape") {
+      setProjectName(project.name)
+      setIsEditingName(false)
+    }
+  }
 
   return (
     <div className="h-screen flex flex-col">
@@ -38,40 +74,50 @@ export default function ProjectDetailPage() {
         <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-xl font-bold">{project.name}</h1>
+        {isEditingName ? (
+          <input
+            autoFocus
+            value={projectName}
+            onChange={handleNameChange}
+            onBlur={handleUpdateName}
+            onKeyDown={handleNameKeyDown}
+            className="text-xl font-bold bg-transparent border-b border-primary focus:outline-none"
+          />
+        ) : (
+          <h1 
+            className="text-xl font-bold cursor-pointer hover:text-primary"
+            onClick={() => setIsEditingName(true)}
+          >
+            {project.name}
+          </h1>
+        )}
       </header>
       <main className="flex-1 p-4 overflow-auto">
-        <div className="space-y-6">
-          {projectLists.length > 0 && (
-            <div>
-              <h2 className="text-lg font-semibold mb-3">Listas</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {projectLists.map((list) => (
-                  <Link
-                    key={list.id}
-                    href={`/lists/${list.id}`}
-                    className="p-4 border rounded-lg hover:bg-muted/50"
-                  >
-                    <h3 className="font-medium">{list.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {list.taskIds.length} tareas
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Todas las tareas</h2>
-            <div className="space-y-2 max-w-2xl">
-              {projectTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-              {projectTasks.length === 0 && (
-                <p className="text-muted-foreground">No hay tareas en este proyecto</p>
-              )}
-            </div>
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Tareas</h2>
+          <form onSubmit={handleCreateTask} className="mb-4 flex gap-2 max-w-xl">
+            <input
+              type="text"
+              value={newTaskContent}
+              onChange={(e) => setNewTaskContent(e.target.value)}
+              placeholder={`Nueva tarea en "${defaultList?.name || 'Por hacer'}"...`}
+              className="flex-1 p-2 border rounded"
+            />
+            <button
+              type="submit"
+              disabled={!newTaskContent.trim()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </form>
+          <div className="space-y-2 max-w-2xl">
+            {projectTasks.map((task) => (
+              <TaskCard key={task.id} task={task} />
+            ))}
+            {projectTasks.length === 0 && (
+              <p className="text-muted-foreground">No hay tareas en este proyecto</p>
+            )}
           </div>
         </div>
       </main>
