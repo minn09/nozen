@@ -1,13 +1,13 @@
 "use client"
-
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Check, GripVertical } from "lucide-react"
+import { Check } from "lucide-react"
 import type { Task } from "@/lib/types/task"
 import { useTaskStore } from "@/lib/store/task"
 
 interface TaskCardProps {
   task: Task
+  isOverlay?: boolean
 }
 
 const priorityColors = {
@@ -17,7 +17,7 @@ const priorityColors = {
   urgente: "bg-red-500/10 border-red-500/30 dark:bg-red-500/20 dark:border-red-500/40",
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
   const toggleTaskComplete = useTaskStore((s) => s.toggleTaskComplete)
   const deleteTask = useTaskStore((s) => s.deleteTask)
 
@@ -32,31 +32,29 @@ export function TaskCard({ task }: TaskCardProps) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition ?? "transform 150ms ease",
+    // La card original se vuelve ghost mientras arrastra
+    opacity: isDragging ? 0 : 1,
   }
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={isOverlay ? undefined : style}
+      {...(isOverlay ? {} : { ...attributes, ...listeners })}
       className={`
         group relative p-3 rounded-lg border bg-card shadow-sm
+        ${isOverlay ? "cursor-grabbing shadow-xl rotate-1 scale-105" : "cursor-grab active:cursor-grabbing"}
         ${task.completedAt ? "opacity-60" : ""}
-        ${isDragging ? "shadow-lg z-50 opacity-90" : ""}
         ${priorityColors[task.priority]}
       `}
     >
       <div className="flex items-start gap-2">
         <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <GripVertical className="w-4 h-4 text-muted-foreground" />
-        </button>
-
-        <button
-          onClick={() => toggleTaskComplete(task.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleTaskComplete(task.id)
+          }}
           className={`
             mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center
             transition-colors flex-shrink-0
@@ -68,12 +66,10 @@ export function TaskCard({ task }: TaskCardProps) {
         >
           {task.completedAt && <Check className="w-3 h-3" />}
         </button>
-
         <div className="flex-1 min-w-0">
           <p className={`text-sm break-words ${task.completedAt ? "line-through text-muted-foreground" : ""}`}>
             {task.content}
           </p>
-
           {task.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {task.tags.map((tag) => (
@@ -87,9 +83,11 @@ export function TaskCard({ task }: TaskCardProps) {
             </div>
           )}
         </div>
-
         <button
-          onClick={() => deleteTask(task.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteTask(task.id)
+          }}
           className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
         >
           <span className="text-xs">×</span>

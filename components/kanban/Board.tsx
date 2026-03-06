@@ -3,13 +3,14 @@
 import {
   DndContext,
   DragOverlay,
-  closestCorners,
+  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   type DragStartEvent,
   type DragEndEvent,
+  type DragOverEvent,
 } from "@dnd-kit/core"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { useState } from "react"
@@ -34,27 +35,27 @@ export function Board() {
   )
 
   function handleDragStart(event: DragStartEvent) {
-    const { active } = event
-    const task = tasksMap[active.id as string]
+    const task = tasksMap[event.active.id as string]
     if (task) setActiveTask(task)
   }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     setActiveTask(null)
-
     if (!over) return
 
     const taskId = active.id as string
     const overId = over.id as string
 
-    const overList = lists.find((l) => l.id === overId)
-    if (overList) {
-      const listTasks = lists.find((l) => l.id === overId)?.taskIds || []
-      moveTask(taskId, overId, listTasks.length)
+    // Dropped over a column droppable (col:listId)
+    if (overId.startsWith("col:")) {
+      const targetListId = overId.replace("col:", "")
+      const listTasks = lists.find((l) => l.id === targetListId)?.taskIds ?? []
+      moveTask(taskId, targetListId, listTasks.length)
       return
     }
 
+    // Dropped over another task
     const overTask = tasksMap[overId]
     if (overTask) {
       const targetList = lists.find((l) => l.id === overTask.listId)
@@ -68,19 +69,26 @@ export function Board() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
       <div className="flex gap-4 p-4 overflow-x-auto h-full justify-center">
         {lists.map((list) => {
           const tasks = list.taskIds.map((id) => tasksMap[id]).filter(Boolean)
-          return <Column key={list.id} list={list} tasks={tasks} />
+          return (
+            <Column
+              key={list.id}
+              list={list}
+              tasks={tasks}
+              isDragging={!!activeTask}
+            />
+          )
         })}
       </div>
 
-      <DragOverlay>
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+      <DragOverlay dropAnimation={{ duration: 150, easing: "ease" }}>
+        {activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
       </DragOverlay>
     </DndContext>
   )
