@@ -1,0 +1,1 @@
+- La seccion `http://localhost:3000/lists` el drag and drop, tiene un problema cuando se arrastra la card en el mismo skeleton no se pone en esa lista
