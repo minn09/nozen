@@ -1,4 +1,5 @@
 "use client"
+import { memo } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { Check } from "lucide-react"
@@ -17,7 +18,7 @@ const priorityColors = {
   urgente: "bg-red-500/10 border-red-500/30 dark:bg-red-500/20 dark:border-red-500/40",
 }
 
-export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
+export const TaskCard = memo(function TaskCard({ task, isOverlay = false }: TaskCardProps) {
   const toggleTaskComplete = useTaskStore((s) => s.toggleTaskComplete)
   const deleteTask = useTaskStore((s) => s.deleteTask)
   const projects = useTaskStore((s) => s.projects)
@@ -102,4 +103,4 @@ export function TaskCard({ task, isOverlay = false }: TaskCardProps) {
       </div>
     </div>
   )
-}
+})
