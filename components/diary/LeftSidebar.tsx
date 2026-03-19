@@ -5,11 +5,12 @@ import { motion } from "framer-motion"
 import { BookOpen, Calendar, Download, Upload, PanelLeftClose, Plus, File, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { useDiaryStore } from "@/lib/store"
-import { useUIStore } from "@/lib/uiStore"
-import { Separator } from "../ui/separator"
-import { useNoteStore } from "@/store/note"
-import { exportToJson, exportToTxtFile, importFromJson } from "@/lib/exportImport"
+import { useDiaryStore } from "@/lib/store/diary"
+import { useUIStore } from "@/lib/store/ui"
+import { Separator } from "@/components/ui/separator"
+import { useNoteStore } from "@/lib/store/note"
+import { exportToJson, exportToTxtFile } from "@/lib/services/export"
+import { importFromJson } from "@/lib/services/import"
 
 export function LeftSidebar() {
   const {

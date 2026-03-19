@@ -2,7 +2,10 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster as SonnerToaster } from "sonner"
 import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Header } from "@/components/Header"
 
 const inter = Geist({
   subsets: ["latin"],
@@ -35,7 +38,7 @@ export const metadata: Metadata = {
     description: "Escribe, reflexiona y haz seguimiento de tu bienestar emocional cada día.",
     images: [
       {
-        url: "/book-light.svg",
+        url: "/icon-light.svg",
         width: 1200,
         height: 630,
         alt: "Mi Diario Personal",
@@ -46,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mi Diario Personal",
     description: "Tu espacio personal para reflexionar y escribir día a día.",
-    images: ["/book.svg"],
+    images: ["/icon-light.svg"],
   },
   robots: {
     index: true,
@@ -55,19 +58,19 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/book-light.svg",
+        url: "/icon-light.svg",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/book-dark.svg",
+        url: "/icon-dark.svg",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/book-light.svg",
+        url: "/notepad-text.png",
         type: "image/svg+xml",
       },
     ],
-    apple: "/book-light.svg",
+    apple: "/icon-dark.svg",
   },
   manifest: "/manifest.json",
 }
@@ -83,7 +86,9 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-import { ThemeProvider } from "@/components/theme-provider"
+function ClientToaster() {
+  return <SonnerToaster position="top-right" />
+}
 
 export default function RootLayout({
   children,
@@ -96,14 +101,16 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="font-sans antialiased min-h-screen flex bg-background text-foreground">
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
           {children}
+          <ClientToaster />
           <Analytics />
         </ThemeProvider>
       </body>

@@ -1,7 +1,13 @@
 import { create } from "zustand"
 import type { DayMetadata, MoodType, StatusChange } from "@/types/diary"
-import { STORAGE_KEYS, getDateKey, getTimeString } from "./constants"
-import { useUIStore } from "./uiStore"
+import { getDateKey, getTimeString } from "../utils/date"
+import { useUIStore } from "./ui"
+import {
+  loadMetadataFromStorage,
+  loadNotesFromStorage,
+  saveMetadataToStorage,
+  saveNotesToStorage,
+} from "../services/storage"
 
 interface DiaryState {
   currentDate: Date
@@ -126,29 +132,22 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 
   loadFromStorage: () => {
     if (typeof window === "undefined") return
-
     try {
-      const savedMetadata = localStorage.getItem(STORAGE_KEYS.METADATA)
-      const savedNotes = localStorage.getItem(STORAGE_KEYS.NOTES)
-
-      set({
-        metadata: savedMetadata ? JSON.parse(savedMetadata) : {},
-        noteContent: savedNotes ? JSON.parse(savedNotes) : {},
-      })
+      const metadata = loadMetadataFromStorage()
+      const notes = loadNotesFromStorage()
+      set({ metadata, noteContent: notes })
     } catch (e) {
       console.error("Failed to load from storage:", e)
     }
   },
 
   saveMetadataToStorage: () => {
-    if (typeof window === "undefined") return
     const { metadata } = get()
-    localStorage.setItem(STORAGE_KEYS.METADATA, JSON.stringify(metadata))
+    saveMetadataToStorage(metadata)
   },
 
   saveNotesToStorage: () => {
-    if (typeof window === "undefined") return
     const { noteContent } = get()
-    localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(noteContent))
+    saveNotesToStorage(noteContent)
   },
 }))
