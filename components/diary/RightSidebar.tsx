@@ -1,18 +1,45 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Minus, PanelRightClose, TrendingDown, TrendingUp } from "lucide-react";
+import {
+	Minus,
+	PanelRightClose,
+	Plus,
+	Trash2,
+	TrendingDown,
+	TrendingUp,
+} from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { MOOD_OPTIONS } from "@/constants/diary";
+import { useDailyTasksStore } from "@/store/daily-tasks";
 import { useDiaryStore } from "@/store/diary";
 import { useUIStore } from "@/store/ui";
+import { getDateKey } from "@/utils/date";
 
 export function RightSidebar() {
 	const { rightSidebarOpen, setRightSidebarOpen, isMobile } = useUIStore();
 
-	const { getCurrentMetadata, updateMood, handleStatusClick } = useDiaryStore();
+	const { getCurrentMetadata, updateMood, handleStatusClick, currentDate } =
+		useDiaryStore();
+
+	const { addTask, toggleTask, deleteTask, loadTasksForDate } =
+		useDailyTasksStore();
+
+	const [newTaskText, setNewTaskText] = useState("");
+
+	const dateKey = getDateKey(currentDate);
+	const dailyTasks = loadTasksForDate(dateKey);
+
+	const handleAddTask = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (newTaskText.trim()) {
+			addTask(dateKey, newTaskText.trim());
+			setNewTaskText("");
+		}
+	};
 
 	const metadata = getCurrentMetadata();
 
@@ -151,17 +178,55 @@ export function RightSidebar() {
 
 				<div className="space-y-3">
 					<Label className="text-sm font-medium text-card-foreground">
-						Otros detalles
+						Tareas del día
 					</Label>
-					<div className="text-xs text-muted-foreground space-y-2">
-						<div className="bg-muted/50 rounded-md p-3">
-							<p className="font-medium mb-1">Nivel de energía</p>
-							<p className="text-muted-foreground">Próximamente...</p>
-						</div>
-						<div className="bg-muted/50 rounded-md p-3">
-							<p className="font-medium mb-1">Etiquetas</p>
-							<p className="text-muted-foreground">Próximamente...</p>
-						</div>
+					<form onSubmit={handleAddTask} className="flex gap-2">
+						<input
+							type="text"
+							value={newTaskText}
+							onChange={(e) => setNewTaskText(e.target.value)}
+							placeholder="Nueva tarea..."
+							className="flex-1 bg-background border border-input rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+						/>
+						<Button type="submit" size="icon" variant="outline">
+							<Plus className="w-4 h-4" />
+						</Button>
+					</form>
+					<div className="space-y-1.5 max-h-48 overflow-y-auto">
+						{dailyTasks.length === 0 ? (
+							<p className="text-xs text-muted-foreground py-2">
+								Sin tareas para hoy
+							</p>
+						) : (
+							dailyTasks.map((task) => (
+								<div key={task.id} className="flex items-center gap-2 group">
+									<input
+										type="checkbox"
+										checked={task.done}
+										onChange={() => toggleTask(dateKey, task.id)}
+										className="w-4 h-4 rounded border-input"
+									/>
+									<span
+										className={`flex-1 text-sm cursor-pointer ${
+											task.done
+												? "line-through text-muted-foreground"
+												: "text-card-foreground"
+										}`}
+										onClick={() => toggleTask(dateKey, task.id)}
+									>
+										{task.text}
+									</span>
+									<Button
+										variant="ghost"
+										size="icon"
+										className="h-6 w-6 opacity-0 group-hover:opacity-100"
+										onClick={() => deleteTask(dateKey, task.id)}
+									>
+										<Trash2 className="w-3 h-3" />
+									</Button>
+								</div>
+							))
+						)}
 					</div>
 				</div>
 			</div>
