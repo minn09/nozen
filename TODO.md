@@ -1,1 +1,0 @@
-- Para exportar mis datos, solo exporta el dia actual, pero quiero exportar todo, las standalone notes y tareas.
