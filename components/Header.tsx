@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
 
-const navItems = [{ href: "/", label: "Diario" }];
+const navItems = [
+	{ href: "/", label: "Diario" },
+	{ href: "/tasks", label: "Tareas" },
+];
 
 export function Header() {
 	const pathname = usePathname();
