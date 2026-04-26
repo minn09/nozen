@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { MOOD_OPTIONS } from "@/constants/diary";
-import { useDiaryStore } from "@/lib/store/diary";
-import { useUIStore } from "@/lib/store/ui";
+import { useDiaryStore } from "@/store/diary";
+import { useUIStore } from "@/store/ui";
 
 export function RightSidebar() {
 	const { rightSidebarOpen, setRightSidebarOpen, isMobile } = useUIStore();

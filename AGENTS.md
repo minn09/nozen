@@ -4,7 +4,7 @@
 
 - Start here for cross-project norms.
 - Check `.agents/skills/` for detailed patterns on-demand.
-- See also: AGENTS.md in `hooks/`, `lib/store/`, and `components/` for specific conventions.
+- See also: AGENTS.md in `hooks/`, `store/`, and `components/` for specific conventions.
 
 ---
 
@@ -34,8 +34,8 @@ When performing this actions, ALWAYS invoke the corresponding skill FIRST:
 | Field       | Value                                            |
 | ----------- | ------------------------------------------------ |
 | Name        | daily-agenda-app                                 |
-| Description | Daily agenda/planner application                 |
-| Type        | Next.js 15 App Router                           |
+| Description | Personal daily planner with Diary, Notes & Daily Tasks |
+| Type        | Next.js 16 App Router                          |
 | Platform   | Web (PWA-ready)                                |
 
 ### Tech Stack
@@ -125,41 +125,14 @@ const id = generateId();
 ├── app/                 # Next.js App Router pages
 ├── components/          # React components
 │   ├── ui/            # Generic UI (shadcn)
-│   ├── diary/         # Diary feature components
-│   ├── kanban/       # Kanban feature components
-│   └── tasks/        # Tasks feature components
+│   └── diary/         # Diary feature components
 ├── hooks/              # Custom hooks
-├── lib/               # Utilities, stores
-│   ├── store/        # Zustand stores
-│   ├── services/     # Business logic
-│   ├── types/       # TypeScript types
-│   ├── utils/       # Utilities
-│   └── constants/   # Constants
-├── types/             # Shared types
+├── store/              # Zustand stores
+├── types/              # TypeScript types
+├── services/           # Business logic
+├── utils/             # Utilities
+├── constants/         # Constants
 └── public/           # Static assets
 ```
 
----
-
-## Code Conventions
-
-- Follow Clean Code principles
-- Use TypeScript strict typing
-- Prefer functional components with React 19 patterns
-- Use `cn()` utility (from tailwind-merge + clsx) for conditional classes
-- Follow existing component patterns in `app/` and `components/`
-- Use Zustand for global state management
-- Use Radix UI primitives for accessible components
-- Use Sonner for toast notifications
-
----
-
-## Project Structure
-
-```
-├── app/                 # Next.js App Router pages
-├── components/         # React components
-├── lib/               # Utilities, hooks, stores
-├── public/            # Static assets
-└── .agents/skills/    # Agent skills
 ```

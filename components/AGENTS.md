@@ -12,8 +12,6 @@
 |----------|-------------|
 | `components/ui/` | Generic UI components (shadcn base) |
 | `components/diary/` | Diary feature specific components |
-| `components/kanban/` | Kanban board components |
-| `components/tasks/` | Task list components |
 
 ## Client vs Server Components
 

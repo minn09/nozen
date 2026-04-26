@@ -15,11 +15,11 @@ import { useEffect } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useDiaryStore } from "@/lib/store/diary";
-import { useNoteStore } from "@/lib/store/note";
-import { useUIStore } from "@/lib/store/ui";
 import { exportToJson, exportToTxtFile } from "@/services/export";
 import { importFromJson } from "@/services/import";
+import { useDiaryStore } from "@/store/diary";
+import { useNoteStore } from "@/store/note";
+import { useUIStore } from "@/store/ui";
 
 export function LeftSidebar() {
 	const { leftSidebarOpen, setLeftSidebarOpen, isMobile } = useUIStore();

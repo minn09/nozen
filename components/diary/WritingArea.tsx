@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useDiaryStore } from "@/lib/store/diary";
-import { useNoteStore } from "@/lib/store/note";
+import { useDiaryStore } from "@/store/diary";
+import { useNoteStore } from "@/store/note";
 import { getDateKey } from "@/utils/date";
 
 export function WritingArea() {

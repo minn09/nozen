@@ -9,9 +9,9 @@ import {
 	PanelRightOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useDiaryStore } from "@/lib/store/diary";
-import { useNoteStore } from "@/lib/store/note";
-import { useUIStore } from "@/lib/store/ui";
+import { useDiaryStore } from "@/store/diary";
+import { useNoteStore } from "@/store/note";
+import { useUIStore } from "@/store/ui";
 import { formatSpanishDate, getDateKey } from "@/utils/date";
 
 export function DateNavigation() {
