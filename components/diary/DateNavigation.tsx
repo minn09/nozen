@@ -30,6 +30,7 @@ export function DateNavigation() {
 	const activeNote = activeNoteId ? notes[activeNoteId] : null;
 
 	const handleBackToDiary = () => {
+		useDiaryStore.getState().setCurrentDate(new Date());
 		setActiveNote(null);
 	};
 
