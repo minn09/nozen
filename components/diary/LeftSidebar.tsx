@@ -83,6 +83,7 @@ export function LeftSidebar() {
 
 	const handleGoToToday = () => {
 		setCurrentDate(new Date());
+		setActiveNote(null);
 		if (isMobile) setLeftSidebarOpen(false);
 	};
 
