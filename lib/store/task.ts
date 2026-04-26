@@ -8,10 +8,7 @@ import type {
 	Task,
 	Workspace,
 } from "@/lib/types/task";
-
-function generateId(): string {
-	return Math.random().toString(36).substring(2, 15);
-}
+import { generateId } from "@/lib/utils/id";
 
 interface TaskBoardState {
 	workspaces: Workspace[];
