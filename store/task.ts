@@ -7,8 +7,8 @@ import type {
 	Project,
 	Task,
 	Workspace,
-} from "@/lib/types/task";
-import { generateId } from "@/lib/utils/id";
+} from "@/types/task";
+import { generateId } from "@/utils/id";
 
 interface TaskBoardState {
 	workspaces: Workspace[];

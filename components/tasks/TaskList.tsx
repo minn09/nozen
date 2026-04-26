@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { TaskCard } from "@/components/kanban/TaskCard";
-import type { List, Project, Task } from "@/lib/types/task";
+import type { List, Project, Task } from "@/types/task";
 
 interface TaskListProps {
 	tasks: Task[];

@@ -5,7 +5,7 @@ import { Minus, PanelRightClose, TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { MOOD_OPTIONS } from "@/lib/constants/diary";
+import { MOOD_OPTIONS } from "@/constants/diary";
 import { useDiaryStore } from "@/lib/store/diary";
 import { useUIStore } from "@/lib/store/ui";
 

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useTaskStore } from "@/lib/store/task";
-import type { List, Task } from "@/lib/types/task";
+import type { List, Task } from "@/types/task";
 import { TaskCard } from "./TaskCard";
 
 interface ColumnProps {

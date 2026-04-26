@@ -8,8 +8,8 @@ import { MoodDialog } from "@/components/diary/MoodDialog";
 import { RightSidebar } from "@/components/diary/RightSidebar";
 import { WritingArea } from "@/components/diary/WritingArea";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useDiaryStore } from "@/lib/store/diary";
-import { useUIStore } from "@/lib/store/ui";
+import { useDiaryStore } from "@/store/diary";
+import { useUIStore } from "@/store/ui";
 
 export default function AgendaPage() {
 	const isMobile = useMediaQuery("(max-width: 768px)");

@@ -15,7 +15,7 @@ import {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { useTaskStore } from "@/lib/store/task";
-import type { Task } from "@/lib/types/task";
+import type { Task } from "@/types/task";
 import { Column } from "./Column";
 import { TaskCard } from "./TaskCard";
 

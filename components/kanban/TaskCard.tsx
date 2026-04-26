@@ -4,7 +4,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Check } from "lucide-react";
 import { memo } from "react";
 import { useTaskStore } from "@/lib/store/task";
-import type { Task } from "@/lib/types/task";
+import type { Task } from "@/types/task";
 
 interface TaskCardProps {
 	task: Task;

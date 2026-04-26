@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useDiaryStore } from "@/lib/store/diary";
 import { useNoteStore } from "@/lib/store/note";
-import { getDateKey } from "@/lib/utils/date";
+import { getDateKey } from "@/utils/date";
 
 export function WritingArea() {
 	const { currentDate, direction, noteContent, updateNote } = useDiaryStore();

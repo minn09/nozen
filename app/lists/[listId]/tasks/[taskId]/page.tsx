@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTaskStore } from "@/lib/store/task";
-import type { Priority } from "@/lib/types/task";
+import type { Priority } from "@/types/task";
 
 const priorities: Priority[] = ["baja", "media", "alta", "urgente"];
 

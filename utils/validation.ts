@@ -5,14 +5,14 @@ import type {
 	Project,
 	Task,
 	Workspace,
-} from "@/lib/types/task";
+} from "@/types/task";
 import {
 	areaSchema,
 	listSchema,
 	projectSchema,
 	taskSchema,
 	workspaceSchema,
-} from "@/lib/types/task";
+} from "@/types/task";
 
 export function isTask(value: unknown): value is Task {
 	return taskSchema.safeParse(value).success;

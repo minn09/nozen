@@ -5,7 +5,7 @@ import { SearchBar } from "@/components/tasks/SearchBar";
 import { TaskFilters } from "@/components/tasks/TaskFilters";
 import { TaskList } from "@/components/tasks/TaskList";
 import { useTaskStore } from "@/lib/store/task";
-import type { Area, List, Project, Task } from "@/lib/types/task";
+import type { Area, List, Project, Task } from "@/types/task";
 
 function TasksContent() {
 	const areas = useTaskStore((s) => s.areas);

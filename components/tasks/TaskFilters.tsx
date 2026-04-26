@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import type { Area, List, Priority, Project } from "@/lib/types/task";
+import type { Area, List, Priority, Project } from "@/types/task";
 
 interface TaskFiltersProps {
 	areas: Area[];

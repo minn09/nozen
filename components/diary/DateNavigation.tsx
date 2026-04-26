@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useDiaryStore } from "@/lib/store/diary";
 import { useNoteStore } from "@/lib/store/note";
 import { useUIStore } from "@/lib/store/ui";
-import { formatSpanishDate, getDateKey } from "@/lib/utils/date";
+import { formatSpanishDate, getDateKey } from "@/utils/date";
 
 export function DateNavigation() {
 	const { currentDate, direction, navigateDay } = useDiaryStore();
