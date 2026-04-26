@@ -18,13 +18,20 @@ interface DailyTasksState {
 	loadTasksForDate: (dateKey: string) => DailyTask[];
 }
 
+const generateId = () => {
+	if (typeof crypto !== "undefined" && crypto.randomUUID) {
+		return crypto.randomUUID();
+	}
+	return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+};
+
 export const useDailyTasksStore = create<DailyTasksState>()(
 	persist(
 		(set, get) => ({
 			tasks: {},
 
 			addTask: (dateKey, text) => {
-				const id = crypto.randomUUID();
+				const id = generateId();
 				set((state) => ({
 					tasks: {
 						...state.tasks,
