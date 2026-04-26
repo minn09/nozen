@@ -134,5 +134,3 @@ const id = generateId();
 ├── constants/         # Constants
 └── public/           # Static assets
 ```
-
-```
