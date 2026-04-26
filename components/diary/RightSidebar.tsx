@@ -229,6 +229,24 @@ export function RightSidebar() {
 						)}
 					</div>
 				</div>
+
+				<Separator />
+
+				<div className="space-y-3">
+					<Label className="text-sm font-medium text-card-foreground">
+						Otros detalles
+					</Label>
+					<div className="text-xs text-muted-foreground space-y-2">
+						<div className="bg-muted/50 rounded-md p-3">
+							<p className="font-medium mb-1">Nivel de energía</p>
+							<p className="text-muted-foreground">Próximamente...</p>
+						</div>
+						<div className="bg-muted/50 rounded-md p-3">
+							<p className="font-medium mb-1">Etiquetas</p>
+							<p className="text-muted-foreground">Próximamente...</p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</motion.aside>
 	);
