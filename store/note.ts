@@ -31,12 +31,19 @@ const loadNotesFromStorage = (): Record<string, Note> => {
 	}
 };
 
+const generateId = () => {
+	if (typeof crypto !== "undefined" && crypto.randomUUID) {
+		return crypto.randomUUID();
+	}
+	return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+};
+
 export const useNoteStore = create<NoteState>((set, get) => ({
 	notes: {},
 	activeNoteId: null,
 
 	newNote: () => {
-		const id = crypto.randomUUID();
+		const id = generateId();
 
 		const untitledCount = Object.values(get().notes).filter((n) =>
 			n.title.startsWith("Nota-"),
