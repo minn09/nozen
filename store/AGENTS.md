@@ -33,8 +33,9 @@ const handleAction = () => {
 |-------|-------------|
 | `diary.ts` | Manages diary state: current date, mood, status checks, daily writing |
 | `ui.ts` | Manages UI state: dialogs, sidebars, theme |
-| `daily-tasks.ts` | Manages daily checklist tasks (simple, per-date) |
-| `note.ts` | Manages standalone notes (separate from diary) |
+| `note.ts` | Manages standalone notes |
+| `daily-tasks.ts` | Manages daily checklist tasks (per-date) |
+| `standalone-tasks.ts` | Manages standalone tasks (independent list) |
 
 ## Store Structure
 
