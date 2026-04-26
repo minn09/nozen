@@ -1,3 +1,5 @@
+import type { Note } from "@/store/note";
+import type { StandaloneTask } from "@/store/standalone-tasks";
 import type { DayMetadata } from "@/types/diary";
 import { exportToTxt } from "./exportTxt";
 
@@ -7,6 +9,8 @@ export type NotesRecord = Record<string, string>;
 export interface ExportData {
 	metadata: MetadataRecord;
 	notes: NotesRecord;
+	standaloneNotes: Note[];
+	standaloneTasks: StandaloneTask[];
 	exportDate: string;
 	version: string;
 }
@@ -14,10 +18,14 @@ export interface ExportData {
 function serializeToJson(
 	metadata: MetadataRecord,
 	notes: NotesRecord,
+	standaloneNotes: Note[],
+	standaloneTasks: StandaloneTask[],
 ): ExportData {
 	return {
 		metadata,
 		notes,
+		standaloneNotes,
+		standaloneTasks,
 		exportDate: new Date().toISOString(),
 		version: "1.0",
 	};
@@ -52,8 +60,15 @@ function getExportFilename(extension: string): string {
 export function exportToJson(
 	metadata: MetadataRecord,
 	notes: NotesRecord,
+	standaloneNotes: Note[],
+	standaloneTasks: StandaloneTask[],
 ): void {
-	const data = serializeToJson(metadata, notes);
+	const data = serializeToJson(
+		metadata,
+		notes,
+		standaloneNotes,
+		standaloneTasks,
+	);
 	const blob = generateJsonBlob(data);
 	const filename = getExportFilename("json");
 	downloadBlob(blob, filename);
@@ -62,6 +77,8 @@ export function exportToJson(
 export function exportToTxtFile(
 	metadata: MetadataRecord,
 	notes: NotesRecord,
+	standaloneNotes: Note[],
+	standaloneTasks: StandaloneTask[],
 ): void {
 	const txt = exportToTxt(metadata, notes);
 	const blob = generateTxtBlob(txt);

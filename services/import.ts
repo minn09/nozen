@@ -1,3 +1,5 @@
+import type { Note } from "@/store/note";
+import type { StandaloneTask } from "@/store/standalone-tasks";
 import type { DayMetadata } from "@/types/diary";
 import type { ExportData, MetadataRecord, NotesRecord } from "./export";
 
@@ -16,6 +18,8 @@ function transformToData(json: Record<string, unknown>): ValidatedData {
 	return {
 		metadata: (json.metadata as MetadataRecord) || {},
 		notes: (json.notes as NotesRecord) || {},
+		standaloneNotes: (json.standaloneNotes as Note[]) || [],
+		standaloneTasks: (json.standaloneTasks as StandaloneTask[]) || [],
 		exportDate: (json.exportDate as string) || new Date().toISOString(),
 		version: (json.version as string) || "1.0",
 	};

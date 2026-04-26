@@ -18,7 +18,9 @@ import { Separator } from "@/components/ui/separator";
 import { exportToJson, exportToTxtFile } from "@/services/export";
 import { importFromJson } from "@/services/import";
 import { useDiaryStore } from "@/store/diary";
+import type { Note } from "@/store/note";
 import { useNoteStore } from "@/store/note";
+import { useStandaloneTasksStore } from "@/store/standalone-tasks";
 import { useUIStore } from "@/store/ui";
 
 export function LeftSidebar() {
@@ -34,6 +36,8 @@ export function LeftSidebar() {
 		deleteNote,
 		loadFromStorage,
 	} = useNoteStore();
+
+	const { tasks: standaloneTasks } = useStandaloneTasksStore();
 
 	useEffect(() => {
 		loadFromStorage();
@@ -52,11 +56,13 @@ export function LeftSidebar() {
 	};
 
 	const handleExportJson = () => {
-		exportToJson(metadata, noteContent);
+		const notesArray = Object.values(notes);
+		exportToJson(metadata, noteContent, notesArray, standaloneTasks);
 	};
 
 	const handleExportTxt = () => {
-		exportToTxtFile(metadata, noteContent);
+		const notesArray = Object.values(notes);
+		exportToTxtFile(metadata, noteContent, notesArray, standaloneTasks);
 	};
 
 	const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,6 +79,18 @@ export function LeftSidebar() {
 						metadata: data.metadata,
 						noteContent: data.notes,
 					});
+					if (data.standaloneNotes?.length > 0) {
+						const notesMap: Record<string, Note> = {};
+						data.standaloneNotes.forEach((n) => {
+							notesMap[n.id] = n;
+						});
+						useNoteStore.getState().setState({ notes: notesMap });
+					}
+					if (data.standaloneTasks?.length > 0) {
+						useStandaloneTasksStore.getState().setState({
+							tasks: data.standaloneTasks,
+						});
+					}
 					alert("Datos importados con éxito.");
 				}
 			},
