@@ -4,6 +4,9 @@
 
 - Start here for cross-project norms.
 - Check `.agents/skills/` for detailed patterns on-demand.
+- See also: AGENTS.md in `hooks/`, `lib/store/`, and `components/` for specific conventions.
+
+---
 
 ## Available Skills
 
@@ -15,7 +18,7 @@
 
 ### Auto-invoke Skills
 
-When performing these actions, ALWAYS invoke the corresponding skill FIRST:
+When performing this actions, ALWAYS invoke the corresponding skill FIRST:
 
 | Action                           | Skill                         |
 | -------------------------------- | ----------------------------- |
@@ -32,20 +35,24 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | ----------- | ------------------------------------------------ |
 | Name        | daily-agenda-app                                 |
 | Description | Daily agenda/planner application                 |
-| Tech Stack  | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| Type        | Next.js 15 App Router                           |
+| Platform   | Web (PWA-ready)                                |
 
-### Tech Stack Details
+### Tech Stack
 
 | Category         | Technology         |
 | ---------------- | ------------------ |
 | Framework        | Next.js 16.0.10    |
-| UI Library       | React 19.2.0       |
-| Language         | TypeScript 5       |
+| Runtime          | React 19.2.0       |
+| Language         | TypeScript 5 (strict) |
 | Styling          | Tailwind CSS 4.1.9 |
+| UI Components    | shadcn/ui + Radix UI |
 | State Management | Zustand 5.0.11     |
-| UI Components    | Radix UI           |
-| Animation        | Framer Motion 12   |
-| Icons            | Lucide React       |
+| Forms            | React Hook Form + Zod |
+| Animation        | Framer Motion 12    |
+| Icons            | Lucide React        |
+| Linting/Format   | Biome              |
+| Package Manager | bun                |
 
 ---
 
@@ -55,17 +62,81 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 # Setup
 bun install
 
-# Development
+# Development server
 bun run dev
 
-# Build
+# Build production
 bun run build
 
-# Lint
+# Lint (Biome)
 bun run lint
+
+# Format (Biome)
+bun run format
+
+# Validate all (lint + format + check)
+bun run check
 
 # Start production
 bun run start
+```
+
+---
+
+## Tooling
+
+### Biome
+
+- **Lint**: `bun run lint`
+- **Format**: `bun run format`
+- **Check**: `bun run check` (lint + format + write fixes)
+
+### Pre-commit Hooks
+
+Husky + lint-staged configured. Every commit runs `bun run check` on staged files automatically.
+
+---
+
+## Code Conventions
+
+- Follow Clean Code principles
+- Use TypeScript strict typing (`strict: true`)
+- Prefer functional components with React 19 patterns
+- Use `cn()` utility (from tailwind-merge + clsx) for conditional classes
+- Follow existing component patterns in `app/` and `components/`
+- Use Zustand for global state management
+- Use Radix UI primitives for accessible components
+- Use Sonner for toast notifications
+
+### ID Generation
+
+Always use `crypto.randomUUID()` — never `Math.random()`. Import from `@/lib/utils/id`:
+
+```typescript
+import { generateId } from "@/lib/utils/id";
+const id = generateId();
+```
+
+---
+
+## Project Structure
+
+```
+├── app/                 # Next.js App Router pages
+├── components/          # React components
+│   ├── ui/            # Generic UI (shadcn)
+│   ├── diary/         # Diary feature components
+│   ├── kanban/       # Kanban feature components
+│   └── tasks/        # Tasks feature components
+├── hooks/              # Custom hooks
+├── lib/               # Utilities, stores
+│   ├── store/        # Zustand stores
+│   ├── services/     # Business logic
+│   ├── types/       # TypeScript types
+│   ├── utils/       # Utilities
+│   └── constants/   # Constants
+├── types/             # Shared types
+└── public/           # Static assets
 ```
 
 ---
