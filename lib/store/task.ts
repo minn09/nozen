@@ -164,12 +164,16 @@ export const useTaskStore = create<TaskBoardState>()(
 			},
 
 			updateTask: (taskId, updates) =>
-				set((state) => ({
-					tasks: {
-						...state.tasks,
-						[taskId]: { ...state.tasks[taskId], ...updates },
-					},
-				})),
+				set((state) => {
+					const existing = state.tasks[taskId];
+					if (!existing) return state;
+					return {
+						tasks: {
+							...state.tasks,
+							[taskId]: { ...existing, ...updates },
+						},
+					};
+				}),
 
 			deleteTask: (taskId) =>
 				set((state) => {
@@ -285,7 +289,9 @@ export const useTaskStore = create<TaskBoardState>()(
 				const state = get();
 				const list = state.lists.find((l) => l.id === listId);
 				if (!list) return [];
-				return list.taskIds.map((id) => state.tasks[id]).filter(Boolean);
+				return list.taskIds
+					.map((id) => state.tasks[id])
+					.filter((t): t is Task => t !== undefined);
 			},
 
 			getListsByProject: (projectId) => {
@@ -305,9 +311,9 @@ export const useTaskStore = create<TaskBoardState>()(
 
 			getTodayTasks: () => {
 				const state = get();
-				const today = new Date().toISOString().split("T")[0];
-				return Object.values(state.tasks).filter((t) =>
-					t.dueDate?.startsWith(today),
+				const today = new Date().toISOString().slice(0, 10);
+				return Object.values(state.tasks).filter(
+					(t) => t.dueDate && t.dueDate.startsWith(today),
 				);
 			},
 

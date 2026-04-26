@@ -8,8 +8,10 @@ export const formatSpanishDate = (date: Date): string => {
 	return date.toLocaleDateString("es-ES", options);
 };
 
-export const getDateKey = (date: Date): string =>
-	date.toISOString().split("T")[0];
+export const getDateKey = (date: Date): string => {
+	const parts = date.toISOString().split("T");
+	return parts[0] ?? "";
+};
 
 export const getTimeString = (): string => {
 	return new Date().toLocaleTimeString("es-ES", {

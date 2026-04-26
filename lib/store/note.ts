@@ -57,28 +57,36 @@ export const useNoteStore = create<NoteState>((set, get) => ({
 	},
 
 	updateNote: (id, content) => {
-		set((state) => ({
-			notes: {
-				...state.notes,
-				[id]: {
-					...state.notes[id],
-					content,
+		set((state) => {
+			const existing = state.notes[id];
+			if (!existing) return state;
+			return {
+				notes: {
+					...state.notes,
+					[id]: {
+						...existing,
+						content,
+					},
 				},
-			},
-		}));
+			};
+		});
 		get().saveToStorage();
 	},
 
 	updateNoteTitle: (id, title) => {
-		set((state) => ({
-			notes: {
-				...state.notes,
-				[id]: {
-					...state.notes[id],
-					title,
+		set((state) => {
+			const existing = state.notes[id];
+			if (!existing) return state;
+			return {
+				notes: {
+					...state.notes,
+					[id]: {
+						...existing,
+						title,
+					},
 				},
-			},
-		}));
+			};
+		});
 		get().saveToStorage();
 	},
 

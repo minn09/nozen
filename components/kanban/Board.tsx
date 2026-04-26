@@ -75,7 +75,9 @@ export function Board() {
 		>
 			<div className="flex gap-4 p-4 overflow-x-auto h-full justify-center">
 				{lists.map((list) => {
-					const tasks = list.taskIds.map((id) => tasksMap[id]).filter(Boolean);
+					const tasks = list.taskIds
+						.map((id) => tasksMap[id])
+						.filter((t): t is Task => t !== undefined);
 					return (
 						<Column
 							key={list.id}

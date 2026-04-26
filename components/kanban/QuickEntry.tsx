@@ -61,9 +61,12 @@ export function QuickEntry() {
 		const { content: taskContent, projectId, tags } = parseCommand(content);
 
 		if (lists.length > 0) {
-			const task = createTask(lists[0].id, taskContent, projectId);
-			if (tags.length > 0) {
-				useTaskStore.getState().updateTask(task.id, { tags });
+			const firstList = lists[0];
+			if (firstList) {
+				const task = createTask(firstList.id, taskContent, projectId);
+				if (tags.length > 0) {
+					useTaskStore.getState().updateTask(task.id, { tags });
+				}
 			}
 		}
 

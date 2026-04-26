@@ -34,12 +34,16 @@ export function TaskList({ tasks, projects, lists }: TaskListProps) {
 	}
 
 	if (isToday) {
-		const today = new Date().toISOString().split("T")[0];
-		filteredTasks = filteredTasks.filter((t) => t.dueDate?.startsWith(today));
+		const today = new Date().toISOString().slice(0, 10);
+		filteredTasks = filteredTasks.filter(
+			(t) => t.dueDate && t.dueDate.startsWith(today),
+		);
 	}
 
 	if (projectId) {
-		filteredTasks = filteredTasks.filter((t) => t.projectId === projectId);
+		filteredTasks = filteredTasks.filter(
+			(t) => t.projectId && t.projectId === projectId,
+		);
 	}
 
 	if (areaId) {
