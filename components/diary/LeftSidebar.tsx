@@ -11,9 +11,11 @@ import {
 	Trash2,
 	Upload,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { exportToJson, exportToTxtFile } from "@/services/export";
 import { importFromJson } from "@/services/import";
@@ -48,21 +50,21 @@ export function LeftSidebar() {
 		if (isMobile) setLeftSidebarOpen(false);
 	};
 
-	const handleDeleteNote = (e: React.MouseEvent, noteId: string) => {
-		e.stopPropagation();
-		if (confirm("¿Eliminar esta nota?")) {
-			deleteNote(noteId);
-		}
+	const handleDeleteNote = (noteId: string) => {
+		deleteNote(noteId);
+		toast.success("Nota eliminada");
 	};
 
 	const handleExportJson = () => {
 		const notesArray = Object.values(notes);
 		exportToJson(metadata, noteContent, notesArray, standaloneTasks);
+		toast.success("Datos exportados correctamente");
 	};
 
 	const handleExportTxt = () => {
 		const notesArray = Object.values(notes);
 		exportToTxtFile(metadata, noteContent, notesArray, standaloneTasks);
+		toast.success("Datos exportados correctamente");
 	};
 
 	const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,29 +74,25 @@ export function LeftSidebar() {
 		importFromJson(
 			file,
 			(data) => {
-				if (
-					confirm("Esto reemplazará tus datos actuales. ¿Deseas continuar?")
-				) {
-					useDiaryStore.setState({
-						metadata: data.metadata,
-						noteContent: data.notes,
+				useDiaryStore.setState({
+					metadata: data.metadata,
+					noteContent: data.notes,
+				});
+				if (data.standaloneNotes?.length > 0) {
+					const notesMap: Record<string, Note> = {};
+					data.standaloneNotes.forEach((n) => {
+						notesMap[n.id] = n;
 					});
-					if (data.standaloneNotes?.length > 0) {
-						const notesMap: Record<string, Note> = {};
-						data.standaloneNotes.forEach((n) => {
-							notesMap[n.id] = n;
-						});
-						useNoteStore.getState().setState({ notes: notesMap });
-					}
-					if (data.standaloneTasks?.length > 0) {
-						useStandaloneTasksStore.getState().setState({
-							tasks: data.standaloneTasks,
-						});
-					}
-					alert("Datos importados con éxito.");
+					useNoteStore.getState().setState({ notes: notesMap });
 				}
+				if (data.standaloneTasks?.length > 0) {
+					useStandaloneTasksStore.getState().setState({
+						tasks: data.standaloneTasks,
+					});
+				}
+				toast.success("Datos importados correctamente");
 			},
-			(error) => alert(error),
+			(error) => toast.error(error),
 		);
 		event.target.value = "";
 	};
@@ -186,7 +184,7 @@ export function LeftSidebar() {
 									variant="ghost"
 									size="icon"
 									className="opacity-0 group-hover:opacity-100 text-sidebar-foreground hover:bg-sidebar-accent h-8 w-8"
-									onClick={(e) => handleDeleteNote(e, note.id)}
+									onClick={() => handleDeleteNote(note.id)}
 								>
 									<Trash2 className="w-3 h-3" />
 								</Button>
