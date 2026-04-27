@@ -1,13 +1,7 @@
 import { create } from "zustand";
+import type { Note } from "@/types/note";
 
 const STORAGE_KEY = "diary-standalone-notes:v1";
-
-interface Note {
-	id: string;
-	title: string;
-	content: string;
-	createdAt: string;
-}
 
 interface NoteState {
 	notes: Record<string, Note>;
