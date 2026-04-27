@@ -49,7 +49,7 @@ export function ConfirmDialog({
 					<AlertDialogTitle>{title}</AlertDialogTitle>
 					<AlertDialogDescription>{description}</AlertDialogDescription>
 				</AlertDialogHeader>
-				<AlertDialogFooter>
+				<AlertDialogFooter className="justify-end">
 					<AlertDialogCancel>Cancelar</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={handleConfirm}

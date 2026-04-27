@@ -2,8 +2,8 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type React from "react";
-import { Toaster as SonnerToaster } from "sonner";
 import "./globals.css";
+import { ClientToaster } from "@/components/client-toaster";
 import { Header } from "@/components/Header";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -95,10 +95,6 @@ export const viewport: Viewport = {
 	maximumScale: 1,
 	userScalable: false,
 };
-
-function ClientToaster() {
-	return <SonnerToaster position="top-right" />;
-}
 
 export default function RootLayout({
 	children,

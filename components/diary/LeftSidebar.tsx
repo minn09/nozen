@@ -8,9 +8,11 @@ import {
 	File,
 	PanelLeftClose,
 	Plus,
+	Settings,
 	Trash2,
 	Upload,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -24,9 +26,11 @@ import type { Note } from "@/store/note";
 import { useNoteStore } from "@/store/note";
 import { useStandaloneTasksStore } from "@/store/standalone-tasks";
 import { useUIStore } from "@/store/ui";
+import { useUserPreferencesStore } from "@/store/user-preferences";
 
 export function LeftSidebar() {
 	const { leftSidebarOpen, setLeftSidebarOpen, isMobile } = useUIStore();
+	const { confirmBeforeDelete } = useUserPreferencesStore();
 
 	const { setCurrentDate, metadata, noteContent } = useDiaryStore();
 
@@ -180,14 +184,30 @@ export function LeftSidebar() {
 									<File className="w-4 h-4 mr-2" />
 									<span className="truncate">{note.title}</span>
 								</Button>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="opacity-0 group-hover:opacity-100 text-sidebar-foreground hover:bg-sidebar-accent h-8 w-8"
-									onClick={() => handleDeleteNote(note.id)}
-								>
-									<Trash2 className="w-3 h-3" />
-								</Button>
+								{confirmBeforeDelete ? (
+									<ConfirmDialog
+										title="Eliminar nota"
+										description={`¿Estás seguro de que quieres eliminar "${note.title}"? Esta acción no se puede deshacer.`}
+										onConfirm={() => handleDeleteNote(note.id)}
+									>
+										<Button
+											variant="ghost"
+											size="icon"
+											className="opacity-0 group-hover:opacity-100 text-sidebar-foreground hover:bg-sidebar-accent h-8 w-8"
+										>
+											<Trash2 className="w-3 h-3" />
+										</Button>
+									</ConfirmDialog>
+								) : (
+									<Button
+										variant="ghost"
+										size="icon"
+										className="opacity-0 group-hover:opacity-100 text-sidebar-foreground hover:bg-sidebar-accent h-8 w-8"
+										onClick={() => handleDeleteNote(note.id)}
+									>
+										<Trash2 className="w-3 h-3" />
+									</Button>
+								)}
 							</div>
 						))}
 					</div>
@@ -231,6 +251,15 @@ export function LeftSidebar() {
 							title="Importar archivo JSON"
 						/>
 					</div>
+					<Link href="/settings">
+						<Button
+							variant="ghost"
+							className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+						>
+							<Settings className="w-4 h-4 mr-2" />
+							Configuración
+						</Button>
+					</Link>
 				</div>
 			</div>
 		</motion.aside>
