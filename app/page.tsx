@@ -22,10 +22,7 @@ export default function AgendaPage() {
 		setIsMobile,
 	} = useUIStore();
 
-	const {
-		loadFromStorage,
-		navigateDay,
-	} = useDiaryStore();
+	const { loadFromStorage, navigateDay } = useDiaryStore();
 
 	useEffect(() => {
 		setIsMobile(isMobile);

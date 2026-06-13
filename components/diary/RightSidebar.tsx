@@ -159,13 +159,22 @@ export function RightSidebar() {
 											</span>
 											<span className="text-card-foreground font-medium inline-flex items-center gap-1">
 												{check.status === "mejor" && (
-													<><TrendingUp className="w-3.5 h-3.5 text-green-600" /> Mejor</>
+													<>
+														<TrendingUp className="w-3.5 h-3.5 text-green-600" />{" "}
+														Mejor
+													</>
 												)}
 												{check.status === "igual" && (
-													<><Minus className="w-3.5 h-3.5 text-yellow-600" /> Igual</>
+													<>
+														<Minus className="w-3.5 h-3.5 text-yellow-600" />{" "}
+														Igual
+													</>
 												)}
 												{check.status === "peor" && (
-													<><TrendingDown className="w-3.5 h-3.5 text-red-600" /> Peor</>
+													<>
+														<TrendingDown className="w-3.5 h-3.5 text-red-600" />{" "}
+														Peor
+													</>
 												)}
 											</span>
 										</div>

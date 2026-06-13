@@ -39,3 +39,6 @@ GEMINI.md
 .codex/skills
 .github/skills
 .gemini/skills
+
+# Tauri
+/src-tauri/target/
