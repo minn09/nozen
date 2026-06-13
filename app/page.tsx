@@ -24,11 +24,7 @@ export default function AgendaPage() {
 
 	const {
 		loadFromStorage,
-		saveMetadataToStorage,
-		saveNotesToStorage,
 		navigateDay,
-		metadata,
-		noteContent,
 	} = useDiaryStore();
 
 	useEffect(() => {
@@ -38,14 +34,6 @@ export default function AgendaPage() {
 	useEffect(() => {
 		loadFromStorage();
 	}, [loadFromStorage]);
-
-	useEffect(() => {
-		saveMetadataToStorage();
-	}, [metadata, saveMetadataToStorage]);
-
-	useEffect(() => {
-		saveNotesToStorage();
-	}, [noteContent, saveNotesToStorage]);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {

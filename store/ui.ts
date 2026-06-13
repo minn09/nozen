@@ -1,34 +1,42 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface UIState {
 	leftSidebarOpen: boolean;
 	rightSidebarOpen: boolean;
 	isMoodDialogOpen: boolean;
 	isMobile: boolean;
-	theme: "light" | "dark" | "system";
 
 	setLeftSidebarOpen: (open: boolean) => void;
 	setRightSidebarOpen: (open: boolean) => void;
 	setIsMoodDialogOpen: (open: boolean) => void;
 	setIsMobile: (mobile: boolean) => void;
-	setTheme: (theme: "light" | "dark" | "system") => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
-	leftSidebarOpen: true,
-	rightSidebarOpen: true,
-	isMoodDialogOpen: false,
-	isMobile: false,
-	theme: "light",
+export const useUIStore = create<UIState>()(
+	persist(
+		(set) => ({
+			leftSidebarOpen: true,
+			rightSidebarOpen: true,
+			isMoodDialogOpen: false,
+			isMobile: false,
 
-	setLeftSidebarOpen: (open) => set({ leftSidebarOpen: open }),
-	setRightSidebarOpen: (open) => set({ rightSidebarOpen: open }),
-	setIsMoodDialogOpen: (open) => set({ isMoodDialogOpen: open }),
-	setIsMobile: (mobile) =>
-		set({
-			isMobile: mobile,
-			leftSidebarOpen: !mobile,
-			rightSidebarOpen: !mobile,
+			setLeftSidebarOpen: (open) => set({ leftSidebarOpen: open }),
+			setRightSidebarOpen: (open) => set({ rightSidebarOpen: open }),
+			setIsMoodDialogOpen: (open) => set({ isMoodDialogOpen: open }),
+			setIsMobile: (mobile) =>
+				set({
+					isMobile: mobile,
+					leftSidebarOpen: !mobile,
+					rightSidebarOpen: !mobile,
+				}),
 		}),
-	setTheme: (theme) => set({ theme }),
-}));
+		{
+			name: "ui:v1",
+			partialize: (state) => ({
+				leftSidebarOpen: state.leftSidebarOpen,
+				rightSidebarOpen: state.rightSidebarOpen,
+			}),
+		},
+	),
+);
