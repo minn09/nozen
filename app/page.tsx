@@ -17,6 +17,7 @@ export default function AgendaPage() {
 	const {
 		leftSidebarOpen,
 		rightSidebarOpen,
+		zenMode,
 		setLeftSidebarOpen,
 		setRightSidebarOpen,
 		setIsMobile,
@@ -62,10 +63,20 @@ export default function AgendaPage() {
 				navigateDay(1);
 			} else if (e.key.toLowerCase() === "t") {
 				useDiaryStore.getState().setCurrentDate(new Date());
+			} else if (e.key.toLowerCase() === "z") {
+				useUIStore.getState().toggleZenMode();
 			}
 		},
 		[navigateDay],
 	);
+
+	// Sincronizar zen mode con el body para que el Header reaccione
+	useEffect(() => {
+		document.body.dataset.zenMode = zenMode ? "true" : undefined;
+		return () => {
+			delete document.body.dataset.zenMode;
+		};
+	}, [zenMode]);
 
 	useEffect(() => {
 		window.addEventListener("keydown", handleKeyDown);
@@ -73,9 +84,12 @@ export default function AgendaPage() {
 	}, [handleKeyDown]);
 
 	return (
-		<div className="flex w-full h-screen overflow-hidden bg-background">
+		<div
+			className="flex w-full h-screen overflow-hidden bg-background"
+			data-zen-mode={zenMode || undefined}
+		>
 			<AnimatePresence initial={false}>
-				{leftSidebarOpen && (
+				{leftSidebarOpen && !zenMode && (
 					<>
 						<LeftSidebar />
 						{isMobile && (
@@ -97,7 +111,7 @@ export default function AgendaPage() {
 			</main>
 
 			<AnimatePresence initial={false}>
-				{rightSidebarOpen && (
+				{rightSidebarOpen && !zenMode && (
 					<>
 						<RightSidebar />
 						{isMobile && (

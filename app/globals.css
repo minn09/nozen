@@ -112,9 +112,33 @@
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50 transition-colors duration-300;
+		@apply border-border outline-ring/50;
 	}
 	body {
 		@apply bg-background text-foreground selection:bg-primary/10;
 	}
+}
+
+/* Zen mode — ocultar header del layout */
+body[data-zen-mode] #layout-header {
+	display: none;
+}
+
+/* Zen mode ambient effect */
+body[data-zen-mode] [data-zen-mode] {
+	background: radial-gradient(
+		ellipse at center,
+		color-mix(in oklch, var(--primary) 3%, transparent) 0%,
+		transparent 70%
+	);
+}
+
+body[data-zen-mode] [data-zen-mode] textarea::selection {
+	background: color-mix(in oklch, var(--primary) 20%, transparent);
+}
+
+/* Smooth scrollbar fade in zen mode */
+body[data-zen-mode] ::-webkit-scrollbar-thumb {
+	background: color-mix(in oklch, var(--foreground) 10%, transparent);
+	border-radius: 999px;
 }

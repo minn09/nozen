@@ -5,6 +5,7 @@ import {
 	ArrowLeft,
 	ChevronLeft,
 	ChevronRight,
+	Focus,
 	PanelLeftOpen,
 	PanelRightOpen,
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useDiaryStore } from "@/store/diary";
 import { useNoteStore } from "@/store/note";
 import { useUIStore } from "@/store/ui";
+import { cn } from "@/utils";
 import { formatSpanishDate, getDateKey } from "@/utils/date";
 
 export function DateNavigation() {
@@ -20,6 +22,7 @@ export function DateNavigation() {
 	const {
 		leftSidebarOpen,
 		rightSidebarOpen,
+		zenMode,
 		setLeftSidebarOpen,
 		setRightSidebarOpen,
 	} = useUIStore();
@@ -35,9 +38,14 @@ export function DateNavigation() {
 	};
 
 	return (
-		<header className="border-b border-border px-4 py-4 flex items-center justify-between shrink-0 gap-4">
+		<header
+			className={cn(
+				"border-b border-border px-4 py-4 flex items-center justify-between shrink-0 gap-4 transition-all duration-300",
+				zenMode && "border-transparent bg-background/80 backdrop-blur-sm",
+			)}
+		>
 			<div className="flex items-center gap-2">
-				{!leftSidebarOpen && (
+				{!zenMode && !leftSidebarOpen && (
 					<Button
 						variant="ghost"
 						size="icon"
@@ -63,7 +71,10 @@ export function DateNavigation() {
 						variant="ghost"
 						size="icon"
 						onClick={() => navigateDay(-1)}
-						className="text-foreground hover:bg-accent"
+						className={cn(
+							"text-foreground hover:bg-accent transition-opacity",
+							zenMode && "opacity-60 hover:opacity-100",
+						)}
 						aria-label="Día anterior"
 					>
 						<ChevronLeft className="w-5 h-5" />
@@ -71,46 +82,67 @@ export function DateNavigation() {
 				)}
 			</div>
 
-			<AnimatePresence mode="wait" initial={false}>
-				{activeNote ? (
-					<motion.h2
-						key="note-title"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						className="text-xl font-medium text-foreground truncate max-w-[300px]"
+			<div className="flex items-center gap-3">
+				{zenMode && (
+					<motion.span
+						initial={{ opacity: 0, scale: 0.9 }}
+						animate={{ opacity: 1, scale: 1 }}
+						className="text-xs text-muted-foreground/50 flex items-center gap-1.5"
 					>
-						{activeNote.title}
-					</motion.h2>
-				) : (
-					<motion.h2
-						key={dateKey}
-						initial={{ opacity: 0, x: direction > 0 ? 20 : -20 }}
-						animate={{ opacity: 1, x: 0 }}
-						exit={{ opacity: 0, x: direction > 0 ? -20 : 20 }}
-						transition={{ duration: 0.2 }}
-						className="text-xl font-medium text-foreground capitalize"
-					>
-						{formatSpanishDate(currentDate)}
-					</motion.h2>
+						<Focus className="w-3 h-3" />
+						Zen
+					</motion.span>
 				)}
-			</AnimatePresence>
+				<AnimatePresence mode="wait" initial={false}>
+					{activeNote ? (
+						<motion.h2
+							key="note-title"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className={cn(
+								"text-xl font-medium text-foreground truncate max-w-[300px] transition-all",
+								zenMode && "text-2xl",
+							)}
+						>
+							{activeNote.title}
+						</motion.h2>
+					) : (
+						<motion.h2
+							key={dateKey}
+							initial={{ opacity: 0, x: direction > 0 ? 20 : -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							exit={{ opacity: 0, x: direction > 0 ? -20 : 20 }}
+							transition={{ duration: 0.2 }}
+							className={cn(
+								"text-xl font-medium text-foreground capitalize transition-all",
+								zenMode && "text-2xl",
+							)}
+						>
+							{formatSpanishDate(currentDate)}
+						</motion.h2>
+					)}
+				</AnimatePresence>
+			</div>
 
 			<div className="flex items-center gap-2">
 				{activeNote ? (
-					<div className="w-9" />
+					<div className={zenMode ? "w-6" : "w-9"} />
 				) : (
 					<>
 						<Button
 							variant="ghost"
 							size="icon"
 							onClick={() => navigateDay(1)}
-							className="text-foreground hover:bg-accent"
+							className={cn(
+								"text-foreground hover:bg-accent transition-opacity",
+								zenMode && "opacity-60 hover:opacity-100",
+							)}
 							aria-label="Día siguiente"
 						>
 							<ChevronRight className="w-5 h-5" />
 						</Button>
-						{!rightSidebarOpen && (
+						{!zenMode && !rightSidebarOpen && (
 							<Button
 								variant="ghost"
 								size="icon"

@@ -1,8 +1,9 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { Focus, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUIStore } from "@/store/ui";
 import { cn } from "@/utils";
 
 const navItems = [
@@ -10,11 +11,36 @@ const navItems = [
 	{ href: "/tasks", label: "Tareas" },
 ];
 
+function ZenToggle() {
+	const { zenMode, toggleZenMode } = useUIStore();
+
+	return (
+		<button
+			type="button"
+			onClick={toggleZenMode}
+			className={cn(
+				"px-3 py-2 rounded-md text-sm font-medium transition-all duration-300",
+				zenMode
+					? "bg-primary text-primary-foreground shadow-sm"
+					: "text-muted-foreground hover:text-foreground hover:bg-muted",
+			)}
+			title={zenMode ? "Salir del modo zen" : "Modo zen"}
+		>
+			<Focus
+				className={cn(
+					"w-4 h-4 transition-transform duration-300",
+					zenMode && "scale-110",
+				)}
+			/>
+		</button>
+	);
+}
+
 export function Header() {
 	const pathname = usePathname();
 
 	return (
-		<header className="border-b">
+		<header id="layout-header" className="border-b">
 			<nav className="flex items-center justify-between p-2">
 				<div className="flex items-center gap-1">
 					{navItems.map((item) => {
@@ -38,17 +64,20 @@ export function Header() {
 						);
 					})}
 				</div>
-				<Link
-					href="/settings"
-					className={cn(
-						"px-3 py-2 rounded-md text-sm font-medium transition-colors",
-						pathname === "/settings"
-							? "bg-primary text-primary-foreground"
-							: "text-muted-foreground hover:text-foreground hover:bg-muted",
-					)}
-				>
-					<Settings className="w-4 h-4" />
-				</Link>
+				<div className="flex items-center gap-1">
+					<ZenToggle />
+					<Link
+						href="/settings"
+						className={cn(
+							"px-3 py-2 rounded-md text-sm font-medium transition-colors",
+							pathname === "/settings"
+								? "bg-primary text-primary-foreground"
+								: "text-muted-foreground hover:text-foreground hover:bg-muted",
+						)}
+					>
+						<Settings className="w-4 h-4" />
+					</Link>
+				</div>
 			</nav>
 		</header>
 	);

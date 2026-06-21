@@ -6,12 +6,14 @@ interface UIState {
 	isMoodDialogOpen: boolean;
 	isMobile: boolean;
 	theme: "light" | "dark" | "system";
+	zenMode: boolean;
 
 	setLeftSidebarOpen: (open: boolean) => void;
 	setRightSidebarOpen: (open: boolean) => void;
 	setIsMoodDialogOpen: (open: boolean) => void;
 	setIsMobile: (mobile: boolean) => void;
 	setTheme: (theme: "light" | "dark" | "system") => void;
+	toggleZenMode: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -20,6 +22,7 @@ export const useUIStore = create<UIState>((set) => ({
 	isMoodDialogOpen: false,
 	isMobile: false,
 	theme: "light",
+	zenMode: false,
 
 	setLeftSidebarOpen: (open) => set({ leftSidebarOpen: open }),
 	setRightSidebarOpen: (open) => set({ rightSidebarOpen: open }),
@@ -31,4 +34,10 @@ export const useUIStore = create<UIState>((set) => ({
 			rightSidebarOpen: !mobile,
 		}),
 	setTheme: (theme) => set({ theme }),
+	toggleZenMode: () =>
+		set((state) =>
+			state.zenMode
+				? { zenMode: false, leftSidebarOpen: true, rightSidebarOpen: true }
+				: { zenMode: true, leftSidebarOpen: false, rightSidebarOpen: false },
+		),
 }));
