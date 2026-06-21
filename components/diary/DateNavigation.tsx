@@ -25,6 +25,7 @@ export function DateNavigation() {
 		rightSidebarOpen,
 		zenMode,
 		serifMode,
+		toggleZenMode,
 		toggleSerifMode,
 		setLeftSidebarOpen,
 		setRightSidebarOpen,
@@ -128,11 +129,23 @@ export function DateNavigation() {
 				</AnimatePresence>
 			</div>
 
-			<div className="flex items-center gap-2">
+			<div className="flex items-center gap-1">
 				{activeNote ? (
 					<div className={zenMode ? "w-6" : "w-9"} />
 				) : (
 					<>
+						{!zenMode && (
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={toggleZenMode}
+								className="text-muted-foreground/50 hover:text-foreground hover:bg-accent"
+								aria-label="Modo zen"
+								title="Modo zen"
+							>
+								<Focus className="w-4 h-4" />
+							</Button>
+						)}
 						<Button
 							variant="ghost"
 							size="icon"

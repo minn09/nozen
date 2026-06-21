@@ -119,11 +119,6 @@
 	}
 }
 
-/* Zen mode — ocultar header del layout */
-body[data-zen-mode] #layout-header {
-	display: none;
-}
-
 /* Zen mode ambient effect */
 body[data-zen-mode] [data-zen-mode] {
 	background: radial-gradient(

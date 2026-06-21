@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { ClientToaster } from "@/components/client-toaster";
-import { Header } from "@/components/Header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Geist({
@@ -118,7 +117,6 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Header />
 					{children}
 					<ClientToaster />
 					<Analytics />
