@@ -16,6 +16,7 @@ interface DiaryState {
 	statusNote: string;
 	metadata: Record<string, DayMetadata>;
 	noteContent: Record<string, string>;
+	lastSavedAt: number;
 
 	setCurrentDate: (date: Date) => void;
 	setDirection: (dir: number) => void;
@@ -51,6 +52,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 	statusNote: "",
 	metadata: {},
 	noteContent: {},
+	lastSavedAt: Date.now(),
 
 	setCurrentDate: (date) => set({ currentDate: date }),
 	setDirection: (dir) => set({ direction: dir }),
@@ -148,10 +150,12 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 	saveMetadataToStorage: () => {
 		const { metadata } = get();
 		saveMetadataToStorage(metadata);
+		set({ lastSavedAt: Date.now() });
 	},
 
 	saveNotesToStorage: () => {
 		const { noteContent } = get();
 		saveNotesToStorage(noteContent);
+		set({ lastSavedAt: Date.now() });
 	},
 }));

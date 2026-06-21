@@ -7,6 +7,7 @@ interface UIState {
 	isMobile: boolean;
 	theme: "light" | "dark" | "system";
 	zenMode: boolean;
+	serifMode: boolean;
 
 	setLeftSidebarOpen: (open: boolean) => void;
 	setRightSidebarOpen: (open: boolean) => void;
@@ -14,6 +15,7 @@ interface UIState {
 	setIsMobile: (mobile: boolean) => void;
 	setTheme: (theme: "light" | "dark" | "system") => void;
 	toggleZenMode: () => void;
+	toggleSerifMode: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -23,6 +25,7 @@ export const useUIStore = create<UIState>((set) => ({
 	isMobile: false,
 	theme: "light",
 	zenMode: false,
+	serifMode: false,
 
 	setLeftSidebarOpen: (open) => set({ leftSidebarOpen: open }),
 	setRightSidebarOpen: (open) => set({ rightSidebarOpen: open }),
@@ -40,4 +43,5 @@ export const useUIStore = create<UIState>((set) => ({
 				? { zenMode: false, leftSidebarOpen: true, rightSidebarOpen: true }
 				: { zenMode: true, leftSidebarOpen: false, rightSidebarOpen: false },
 		),
+	toggleSerifMode: () => set((state) => ({ serifMode: !state.serifMode })),
 }));

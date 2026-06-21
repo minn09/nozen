@@ -8,6 +8,7 @@ import {
 	Focus,
 	PanelLeftOpen,
 	PanelRightOpen,
+	Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDiaryStore } from "@/store/diary";
@@ -23,6 +24,8 @@ export function DateNavigation() {
 		leftSidebarOpen,
 		rightSidebarOpen,
 		zenMode,
+		serifMode,
+		toggleSerifMode,
 		setLeftSidebarOpen,
 		setRightSidebarOpen,
 	} = useUIStore();
@@ -142,7 +145,23 @@ export function DateNavigation() {
 						>
 							<ChevronRight className="w-5 h-5" />
 						</Button>
-						{!zenMode && !rightSidebarOpen && (
+						{zenMode ? (
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={toggleSerifMode}
+								className={cn(
+									"transition-all",
+									serifMode
+										? "text-primary bg-primary/10"
+										: "text-muted-foreground/50 hover:text-foreground",
+								)}
+								aria-label="Alternar fuente serif"
+								title={serifMode ? "Fuente sans-serif" : "Fuente serif"}
+							>
+								<Pencil className="w-4 h-4" />
+							</Button>
+						) : !rightSidebarOpen ? (
 							<Button
 								variant="ghost"
 								size="icon"
@@ -152,7 +171,7 @@ export function DateNavigation() {
 							>
 								<PanelRightOpen className="w-5 h-5" />
 							</Button>
-						)}
+						) : null}
 					</>
 				)}
 			</div>
