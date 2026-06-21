@@ -33,6 +33,8 @@ CLAUDE.md
 GEMINI.md
 .agents/
 .github/copilot-instructions.md
+.atl/
+TODO.MD
 
 # AI Skills symlinks
 .claude/skills

@@ -4,19 +4,22 @@ import { motion } from "framer-motion";
 import {
 	BookOpen,
 	Calendar,
+	ChevronDown,
+	ChevronUp,
 	Download,
 	File,
 	PanelLeftClose,
 	Plus,
-	Settings,
+	TestTube,
 	Trash2,
 	Upload,
 } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { es } from "react-day-picker/locale";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import { Calendar as CalendarPrimitive } from "@/components/ui/calendar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { exportToJson, exportToTxtFile } from "@/services/export";
@@ -31,8 +34,10 @@ import { useUserPreferencesStore } from "@/store/user-preferences";
 export function LeftSidebar() {
 	const { leftSidebarOpen, setLeftSidebarOpen, isMobile } = useUIStore();
 	const { confirmBeforeDelete } = useUserPreferencesStore();
+	const [showCalendar, setShowCalendar] = useState(true);
 
-	const { setCurrentDate, metadata, noteContent } = useDiaryStore();
+	const { currentDate, setCurrentDate, metadata, noteContent } =
+		useDiaryStore();
 
 	const {
 		notes,
@@ -101,17 +106,28 @@ export function LeftSidebar() {
 		event.target.value = "";
 	};
 
-	const handleGoToToday = () => {
-		setCurrentDate(new Date());
+	const datesWithEntries = useMemo(() => {
+		const dates: Date[] = [];
+		for (const key of Object.keys(noteContent)) {
+			if (!noteContent[key]?.trim()) continue;
+			const [y, m, d] = key.split("-").map(Number);
+			dates.push(new Date(y, m - 1, d));
+		}
+		return dates;
+	}, [noteContent]);
+
+	const handleDateSelect = (date: Date | undefined) => {
+		if (!date) return;
+		setCurrentDate(date);
 		setActiveNote(null);
 		if (isMobile) setLeftSidebarOpen(false);
 	};
 
 	return (
 		<motion.aside
-			initial={{ width: 0, opacity: 0, x: isMobile ? -256 : 0 }}
+			initial={{ width: 0, opacity: 0, x: isMobile ? -300 : 0 }}
 			animate={{
-				width: 256,
+				width: 300,
 				opacity: 1,
 				x: 0,
 				position: isMobile ? "fixed" : "relative",
@@ -121,7 +137,7 @@ export function LeftSidebar() {
 			exit={{
 				width: 0,
 				opacity: 0,
-				x: isMobile ? -256 : 0,
+				x: isMobile ? -300 : 0,
 				transition: { duration: 0.2 },
 			}}
 			transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -147,14 +163,38 @@ export function LeftSidebar() {
 
 			<div className="flex-1 p-4 overflow-y-auto space-y-6">
 				<div className="space-y-2">
-					<Button
-						variant="ghost"
-						className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-						onClick={handleGoToToday}
+					<button
+						type="button"
+						onClick={() => setShowCalendar((v) => !v)}
+						className="w-full flex items-center justify-between text-xs font-semibold text-sidebar-foreground/50 uppercase px-2"
 					>
-						<Calendar className="w-4 h-4 mr-2" />
-						Hoy
-					</Button>
+						<span className="flex items-center gap-1.5">
+							<Calendar className="w-3.5 h-3.5" />
+							Calendario
+						</span>
+						{showCalendar ? (
+							<ChevronUp className="w-3 h-3" />
+						) : (
+							<ChevronDown className="w-3 h-3" />
+						)}
+					</button>
+					{showCalendar && (
+						<div className="px-1">
+							<CalendarPrimitive
+								mode="single"
+								selected={currentDate}
+								onSelect={handleDateSelect}
+								locale={es}
+								modifiers={{ hasEntry: datesWithEntries }}
+								modifiersStyles={{
+									hasEntry: {
+										fontWeight: "600",
+									},
+								}}
+								className="w-full border-0"
+							/>
+						</div>
+					)}
 				</div>
 
 				<div className="space-y-2">
@@ -251,6 +291,18 @@ export function LeftSidebar() {
 							title="Importar archivo JSON"
 						/>
 					</div>
+					{process.env.NODE_ENV === "development" && (
+						<>
+							<Separator className="my-4" />
+							<a
+								href="/sandbox"
+								className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors rounded-md hover:bg-sidebar-accent"
+							>
+								<TestTube className="w-3.5 h-3.5" />
+								Sandbox
+							</a>
+						</>
+					)}
 				</div>
 			</div>
 		</motion.aside>

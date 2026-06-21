@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
+import { Calendar, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getDailyPrompt } from "@/constants/prompts";
 import { useDiaryStore } from "@/store/diary";
@@ -120,6 +120,7 @@ export function WritingArea() {
 	const activeNote = activeNoteId ? notes[activeNoteId] : null;
 
 	const showPrompt = zenMode && !content.trim() && !activeNote;
+	const [showZenCalendar, setShowZenCalendar] = useState(true);
 
 	const wrapperCn = cn(
 		"flex-1 overflow-y-auto transition-all duration-300",
@@ -209,13 +210,30 @@ export function WritingArea() {
 						<WordCount text={content} visible={zenMode} />
 					</div>
 					{zenMode && (
-						<motion.div
-							initial={{ opacity: 0, y: 8 }}
-							animate={{ opacity: 1, y: 0 }}
-							className="mt-4 max-w-xs mx-auto w-full"
-						>
-							<StreakCalendar />
-						</motion.div>
+						<>
+							<button
+								type="button"
+								onClick={() => setShowZenCalendar((v) => !v)}
+								className="mt-4 mx-auto flex items-center gap-1.5 text-xs text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+							>
+								<Calendar className="w-3.5 h-3.5" />
+								{showZenCalendar ? "Ocultar calendario" : "Mostrar calendario"}
+								{showZenCalendar ? (
+									<ChevronUp className="w-3 h-3" />
+								) : (
+									<ChevronDown className="w-3 h-3" />
+								)}
+							</button>
+							{showZenCalendar && (
+								<motion.div
+									initial={{ opacity: 0, y: 8 }}
+									animate={{ opacity: 1, y: 0 }}
+									className="mt-2 max-w-xs mx-auto w-full"
+								>
+									<StreakCalendar />
+								</motion.div>
+							)}
+						</>
 					)}
 				</motion.div>
 			</AnimatePresence>
