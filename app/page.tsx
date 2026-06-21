@@ -23,12 +23,7 @@ export default function AgendaPage() {
 		setIsMobile,
 	} = useUIStore();
 
-	const {
-		loadFromStorage,
-		saveMetadataToStorage,
-		saveNotesToStorage,
-		navigateDay,
-	} = useDiaryStore();
+	const { loadFromStorage, navigateDay } = useDiaryStore();
 
 	useEffect(() => {
 		setIsMobile(isMobile);
@@ -37,14 +32,6 @@ export default function AgendaPage() {
 	useEffect(() => {
 		loadFromStorage();
 	}, [loadFromStorage]);
-
-	useEffect(() => {
-		saveMetadataToStorage();
-	}, [saveMetadataToStorage]);
-
-	useEffect(() => {
-		saveNotesToStorage();
-	}, [saveNotesToStorage]);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {

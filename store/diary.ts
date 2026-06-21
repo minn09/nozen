@@ -80,12 +80,12 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 		set((state) => {
 			const key = getDateKey(state.currentDate);
 			const current = state.metadata[key] || getDefaultMetadata();
-			return {
-				metadata: {
-					...state.metadata,
-					[key]: { ...current, mood },
-				},
+			const newMetadata = {
+				...state.metadata,
+				[key]: { ...current, mood },
 			};
+			saveMetadataToStorage(newMetadata);
+			return { metadata: newMetadata };
 		}),
 
 	addStatusCheck: () =>
@@ -98,21 +98,24 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 
 			useUIStore.getState().setIsMoodDialogOpen(false);
 
-			return {
-				metadata: {
-					...state.metadata,
-					[key]: {
-						...current,
-						statusChecks: [
-							...current.statusChecks,
-							{
-								time: getTimeString(),
-								status: pendingStatus,
-								note: statusNote,
-							},
-						],
-					},
+			const newMetadata = {
+				...state.metadata,
+				[key]: {
+					...current,
+					statusChecks: [
+						...current.statusChecks,
+						{
+							time: getTimeString(),
+							status: pendingStatus,
+							note: statusNote,
+						},
+					],
 				},
+			};
+			saveMetadataToStorage(newMetadata);
+
+			return {
+				metadata: newMetadata,
 				pendingStatus: null,
 				statusNote: "",
 			};
@@ -128,12 +131,12 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 	updateNote: (content) =>
 		set((state) => {
 			const key = getDateKey(state.currentDate);
-			return {
-				noteContent: {
-					...state.noteContent,
-					[key]: content,
-				},
+			const newNoteContent = {
+				...state.noteContent,
+				[key]: content,
 			};
+			saveNotesToStorage(newNoteContent);
+			return { noteContent: newNoteContent };
 		}),
 
 	loadFromStorage: () => {

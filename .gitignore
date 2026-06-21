@@ -41,3 +41,6 @@ TODO.MD
 .codex/skills
 .github/skills
 .gemini/skills
+
+# Tauri
+/src-tauri/target/

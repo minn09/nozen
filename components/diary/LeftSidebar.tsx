@@ -45,14 +45,7 @@ export function LeftSidebar() {
 		setActiveNote,
 		newNote: newNoteStore,
 		deleteNote,
-		loadFromStorage,
 	} = useNoteStore();
-
-	const { tasks: standaloneTasks } = useStandaloneTasksStore();
-
-	useEffect(() => {
-		loadFromStorage();
-	}, [loadFromStorage]);
 
 	const handleNoteClick = (noteId: string) => {
 		setActiveNote(noteId);

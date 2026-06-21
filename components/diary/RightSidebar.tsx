@@ -157,10 +157,25 @@ export function RightSidebar() {
 											<span className="text-muted-foreground font-mono">
 												{check.time}
 											</span>
-											<span className="text-card-foreground font-medium">
-												{check.status === "mejor" && "📈 Mejor"}
-												{check.status === "igual" && "➡️ Igual"}
-												{check.status === "peor" && "📉 Peor"}
+											<span className="text-card-foreground font-medium inline-flex items-center gap-1">
+												{check.status === "mejor" && (
+													<>
+														<TrendingUp className="w-3.5 h-3.5 text-green-600" />{" "}
+														Mejor
+													</>
+												)}
+												{check.status === "igual" && (
+													<>
+														<Minus className="w-3.5 h-3.5 text-yellow-600" />{" "}
+														Igual
+													</>
+												)}
+												{check.status === "peor" && (
+													<>
+														<TrendingDown className="w-3.5 h-3.5 text-red-600" />{" "}
+														Peor
+													</>
+												)}
 											</span>
 										</div>
 										{check.note && (
