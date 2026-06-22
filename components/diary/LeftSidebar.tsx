@@ -14,22 +14,21 @@ import {
 	Trash2,
 	Upload,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { es } from "react-day-picker/locale";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarPrimitive } from "@/components/ui/calendar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { exportToJson, exportToTxtFile } from "@/services/export";
 import { importFromJson } from "@/services/import";
 import { useDiaryStore } from "@/store/diary";
-import type { Note } from "@/store/note";
 import { useNoteStore } from "@/store/note";
 import { useStandaloneTasksStore } from "@/store/standalone-tasks";
 import { useUIStore } from "@/store/ui";
 import { useUserPreferencesStore } from "@/store/user-preferences";
+
+import { StreakCalendar } from "./StreakCalendar";
 
 export function LeftSidebar() {
 	const { leftSidebarOpen, setLeftSidebarOpen, isMobile } = useUIStore();
@@ -45,14 +44,9 @@ export function LeftSidebar() {
 		setActiveNote,
 		newNote: newNoteStore,
 		deleteNote,
-		loadFromStorage,
 	} = useNoteStore();
 
 	const { tasks: standaloneTasks } = useStandaloneTasksStore();
-
-	useEffect(() => {
-		loadFromStorage();
-	}, [loadFromStorage]);
 
 	const handleNoteClick = (noteId: string) => {
 		setActiveNote(noteId);
@@ -83,22 +77,34 @@ export function LeftSidebar() {
 		importFromJson(
 			file,
 			(data) => {
-				useDiaryStore.setState({
-					metadata: data.metadata,
-					noteContent: data.notes,
-				});
+				useDiaryStore.setState((state) => ({
+					metadata: { ...state.metadata, ...data.metadata },
+					noteContent: { ...state.noteContent, ...data.notes },
+				}));
+
 				if (data.standaloneNotes?.length > 0) {
-					const notesMap: Record<string, Note> = {};
-					data.standaloneNotes.forEach((n) => {
-						notesMap[n.id] = n;
-					});
-					useNoteStore.getState().setState({ notes: notesMap });
+					const notesMap = Object.fromEntries(
+						data.standaloneNotes.map((n) => [n.id, n]),
+					);
+					useNoteStore.setState((state) => ({
+						notes: { ...state.notes, ...notesMap },
+					}));
 				}
+
 				if (data.standaloneTasks?.length > 0) {
-					useStandaloneTasksStore.getState().setState({
-						tasks: data.standaloneTasks,
-					});
+					const existingIds = new Set(
+						useStandaloneTasksStore.getState().tasks.map((t) => t.id),
+					);
+					const newTasks = data.standaloneTasks.filter(
+						(t) => !existingIds.has(t.id),
+					);
+					if (newTasks.length > 0) {
+						useStandaloneTasksStore.setState((state) => ({
+							tasks: [...state.tasks, ...newTasks],
+						}));
+					}
 				}
+
 				toast.success("Datos importados correctamente");
 			},
 			(error) => toast.error(error),
@@ -106,28 +112,16 @@ export function LeftSidebar() {
 		event.target.value = "";
 	};
 
-	const datesWithEntries = useMemo(() => {
-		const dates: Date[] = [];
-		for (const key of Object.keys(noteContent)) {
-			if (!noteContent[key]?.trim()) continue;
-			const [y, m, d] = key.split("-").map(Number);
-			dates.push(new Date(y, m - 1, d));
-		}
-		return dates;
-	}, [noteContent]);
-
-	const handleDateSelect = (date: Date | undefined) => {
-		if (!date) return;
-		setCurrentDate(date);
+	const handleDateSelect = (date: Date) => {
 		setActiveNote(null);
 		if (isMobile) setLeftSidebarOpen(false);
 	};
 
 	return (
 		<motion.aside
-			initial={{ width: 0, opacity: 0, x: isMobile ? -300 : 0 }}
+			initial={{ width: 0, opacity: 0, x: isMobile ? -340 : 0 }}
 			animate={{
-				width: 300,
+				width: 340,
 				opacity: 1,
 				x: 0,
 				position: isMobile ? "fixed" : "relative",
@@ -137,7 +131,7 @@ export function LeftSidebar() {
 			exit={{
 				width: 0,
 				opacity: 0,
-				x: isMobile ? -300 : 0,
+				x: isMobile ? -340 : 0,
 				transition: { duration: 0.2 },
 			}}
 			transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -180,19 +174,7 @@ export function LeftSidebar() {
 					</button>
 					{showCalendar && (
 						<div className="px-1">
-							<CalendarPrimitive
-								mode="single"
-								selected={currentDate}
-								onSelect={handleDateSelect}
-								locale={es}
-								modifiers={{ hasEntry: datesWithEntries }}
-								modifiersStyles={{
-									hasEntry: {
-										fontWeight: "600",
-									},
-								}}
-								className="w-full border-0"
-							/>
+							<StreakCalendar onDateSelect={handleDateSelect} />
 						</div>
 					)}
 				</div>
