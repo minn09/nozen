@@ -9,6 +9,13 @@ const nextConfig = {
 		unoptimized: true,
 	},
 
+	// Allow dev origins for local testing (avoid cross-origin warning when hitting 127.0.0.1)
+	...(isTauri
+		? {}
+		: {
+				allowedDevOrigins: ["http://127.0.0.1:3000", "http://localhost:3000"],
+			}),
+
 	// Tauri-only: static export config
 	...(isTauri
 		? {
@@ -26,18 +33,9 @@ const nextConfig = {
 						{
 							source: "/(.*)",
 							headers: [
-								{
-									key: "X-DNS-Prefetch-Control",
-									value: "on",
-								},
-								{
-									key: "X-Frame-Options",
-									value: "SAMEORIGIN",
-								},
-								{
-									key: "X-Content-Type-Options",
-									value: "nosniff",
-								},
+								{ key: "X-DNS-Prefetch-Control", value: "on" },
+								{ key: "X-Frame-Options", value: "SAMEORIGIN" },
+								{ key: "X-Content-Type-Options", value: "nosniff" },
 								{
 									key: "Referrer-Policy",
 									value: "strict-origin-when-cross-origin",
