@@ -32,7 +32,7 @@ function Calendar({
 		<DayPicker
 			showOutsideDays={showOutsideDays}
 			className={cn(
-				"group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+				"group/calendar bg-background p-3 [--cell-size:--spacing(9)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
 				String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
 				String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
 				className,
@@ -93,7 +93,10 @@ function Calendar({
 					"flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
 					defaultClassNames.weekday,
 				),
-				week: cn("mt-2 flex w-full", defaultClassNames.week),
+				week: cn(
+					"mt-2 flex w-full justify-center gap-1",
+					defaultClassNames.week,
+				),
 				week_number_header: cn(
 					"w-(--cell-size) select-none",
 					defaultClassNames.week_number_header,
@@ -103,22 +106,16 @@ function Calendar({
 					defaultClassNames.week_number,
 				),
 				day: cn(
-					"group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md",
-					props.showWeekNumber
-						? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-						: "[&:first-child[data-selected=true]_button]:rounded-l-md",
+					"group/day relative p-0 text-center select-none flex items-center justify-center size-(--cell-size)",
 					defaultClassNames.day,
 				),
 				range_start: cn(
-					"rounded-l-md bg-accent",
+					"rounded-l-full bg-accent",
 					defaultClassNames.range_start,
 				),
 				range_middle: cn("rounded-none", defaultClassNames.range_middle),
-				range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
-				today: cn(
-					"rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
-					defaultClassNames.today,
-				),
+				range_end: cn("rounded-r-full bg-accent", defaultClassNames.range_end),
+				today: cn("text-amber-500 font-semibold", defaultClassNames.today),
 				outside: cn(
 					"text-muted-foreground aria-selected:text-muted-foreground",
 					defaultClassNames.outside,
@@ -207,7 +204,7 @@ function CalendarDayButton({
 			data-range-end={modifiers.range_end}
 			data-range-middle={modifiers.range_middle}
 			className={cn(
-				"flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70",
+				"flex items-center justify-center size-9 rounded-full leading-none font-normal border-0 border-none outline-none shadow-none focus:outline-none focus:border-none focus:ring-0 focus-visible:ring-0 group-data-[focused=true]/day:ring-0 data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground",
 				defaultClassNames.day,
 				className,
 			)}
