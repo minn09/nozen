@@ -12,11 +12,10 @@ const WEEKDAYS = ["L", "M", "Mi", "J", "V", "S", "D"];
 function getMonthGrid(year: number, month: number) {
 	const firstDay = new Date(year, month, 1);
 	const lastDay = new Date(year, month + 1, 0);
-	const startOffset = firstDay.getDay(); // 0=Sun
+	const startOffset = firstDay.getDay();
 	const daysInMonth = lastDay.getDate();
 
 	const days: (number | null)[] = [];
-	// Offset for first day (0 = Sunday, shift so Monday is first)
 	for (let i = 0; i < (startOffset + 6) % 7; i++) {
 		days.push(null);
 	}
@@ -31,7 +30,7 @@ function getDateKeyFromParts(year: number, month: number, day: number): string {
 }
 
 export function StreakCalendar() {
-	const { noteContent, currentDate } = useDiaryStore();
+	const { noteContent, currentDate, setCurrentDate } = useDiaryStore();
 	const [viewDate, setViewDate] = useState(() => new Date());
 
 	const year = viewDate.getFullYear();
@@ -40,10 +39,10 @@ export function StreakCalendar() {
 
 	const grid = useMemo(() => getMonthGrid(year, month), [year, month]);
 
-	const hasEntry = useMemo(() => {
-		const set = new Set(Object.keys(noteContent));
-		return set;
-	}, [noteContent]);
+	const entries = useMemo(
+		() => new Set(Object.keys(noteContent)),
+		[noteContent],
+	);
 
 	const monthName = viewDate.toLocaleDateString("es-ES", {
 		month: "long",
@@ -60,10 +59,13 @@ export function StreakCalendar() {
 		month === today.getMonth() &&
 		year === today.getFullYear();
 
-	const isCurrentDate = (d: number) =>
+	const isSelected = (d: number) =>
 		d === currentDate.getDate() &&
 		month === currentDate.getMonth() &&
 		year === currentDate.getFullYear();
+
+	const hasEntry = (day: number) =>
+		entries.has(getDateKeyFromParts(year, month, day));
 
 	return (
 		<Card>
@@ -107,17 +109,28 @@ export function StreakCalendar() {
 							<button
 								type="button"
 								key={`day-${day}`}
+								onClick={() => setCurrentDate(new Date(year, month, day))}
 								className={cn(
-									"h-8 w-full rounded-md text-xs flex items-center justify-center transition-colors",
-									hasEntry.has(getDateKeyFromParts(year, month, day))
-										? "bg-primary/20 text-primary font-medium"
-										: "text-muted-foreground/60",
-									isToday(day) &&
-										"ring-1 ring-primary/40 ring-offset-1 ring-offset-background",
-									isCurrentDate(day) && "bg-primary/30",
+									"relative h-8 w-full rounded-md text-xs flex items-center justify-center transition-colors",
+									isSelected(day) && "bg-primary/20 text-primary font-semibold",
+									!isSelected(day) && hasEntry(day) && "text-primary",
+									!isSelected(day) &&
+										!hasEntry(day) &&
+										"text-muted-foreground/60",
 								)}
 							>
 								{day}
+								{hasEntry(day) && (
+									<span
+										className={cn(
+											"absolute bottom-1 h-1 w-1 rounded-full",
+											isSelected(day) ? "bg-primary" : "bg-primary/60",
+										)}
+									/>
+								)}
+								{isToday(day) && !isSelected(day) && (
+									<span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-blue-500" />
+								)}
 							</button>
 						),
 					)}
