@@ -1,10 +1,17 @@
 # Nozen
 
-Personal daily planner with three main sections:
+Personal daily planner: Diary with mood tracking, Notes, and Daily Tasks.
 
-- **Diary** — mood tracking + free writing per day
-- **Notes** — standalone casual notes
+## Features
+
+- **Diary** — mood tracking (emoji-based) + free writing per day with daily prompts
+- **Writing Streak Calendar** — visual calendar showing your writing history
+- **Notes** — standalone notes with full text search
 - **Daily Tasks** — simple checklist per day
+- **Zen Mode** — distraction-free writing with serif font toggle
+- **Desktop App** — Tauri v2 wrapper for native experience
+- **Themes** — dark/light mode
+- **Export** — export diary entries and notes
 
 ## Tech Stack
 
@@ -12,48 +19,50 @@ Personal daily planner with three main sections:
 |----------|------------|
 | Framework | Next.js 16 |
 | Runtime | React 19 |
-| Language | TypeScript 5 |
+| Language | TypeScript 5 (strict) |
 | Styling | Tailwind CSS 4 |
 | UI | shadcn/ui + Radix UI |
 | State | Zustand |
 | Animation | Framer Motion |
 | Icons | Lucide React |
+| Desktop | Tauri v2 (Rust) |
+| Package Manager | pnpm |
 
 ## Getting Started
 
 ```bash
-# Install dependencies
 bun install
-
-# Start development
 bun run dev
-
-# Build for production
-bun run build
-
-# Lint
-bun run lint
-
-# Format
-bun run format
 ```
 
-## Development
+Open [http://localhost:3000](http://localhost:3000).
 
-- Run `bun run dev` and open http://localhost:3000
-- Press `T` to jump to today
-- Use arrow keys to navigate days
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `bun run dev` | Start dev server |
+| `bun run build` | Build for production |
+| `bun run start` | Start production server |
+| `bun run lint` | Lint with Biome |
+| `bun run format` | Format with Biome |
+| `bun run check` | Lint + format + write fixes |
+| `bun run tauri:dev` | Start Tauri desktop in dev mode |
+
+## Shortcuts
+
+- `T` — jump to today
+- Arrow keys — navigate days in diary
 
 ## Project Structure
 
 ```
-├── app/           # Next.js pages
-├── components/   # React components
-├── store/        # Zustand stores
-├── services/     # Storage & import/export
-└── types/        # TypeScript types
+├── app/           # Next.js App Router pages
+├── components/    # React components (ui/ + diary/)
+├── store/         # Zustand stores (diary, notes, tasks, ui)
+├── services/      # Storage, import/export
+├── hooks/         # Custom React hooks
+├── constants/     # Prompts, mood options
+├── types/         # TypeScript types
+└── src-tauri/     # Tauri v2 desktop wrapper
 ```
-
-## Docs
-
-See [AGENTS.md](AGENTS.md) for full documentation.

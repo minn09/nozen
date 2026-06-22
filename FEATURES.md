@@ -43,26 +43,31 @@ Nozen como ecosistema personal: web (Vercel) + desktop (Tauri) + CLI + MCP Serve
 
 App web 100% cliente con Next.js 16, React 19, Zustand + localStorage. Corre en Vercel. Datos persistentes solo en el navegador.
 
+**Features actuales:**
+- Diary con mood tracking (emojis), escritura libre y prompts diarios
+- Writing streak calendar
+- Zen mode con serif toggle y focus writing
+- Notes con búsqueda de texto completo
+- Daily tasks checklist por fecha
+- Temas dark/light
+- Export de entradas y notas
+- Desktop wrapper con Tauri v2 (setup completado, Fase 1 ya implementada)
+
 ---
 
-## 🚀 Fase 1 — Desktop con Tauri (próximo)
+## ✅ Fase 1 — Desktop con Tauri (completada)
 
 Empaquetar la app actual como aplicación de escritorio usando Tauri v2.
 
 ### Setup
-- Instalar Tauri CLI y dependencias
-- Generar `src-tauri/` con `tauri init`
-- Configurar `tauri.conf.json` (ventana, título, iconos)
-- El frontend se sirve desde el build estático de Next.js
+- Tauri CLI y dependencias instaladas
+- `tauri.conf.json` configurado (ventana, título, iconos)
+- Frontend servido desde el build estático de Next.js
+- Capacidades ACL para window, event, menu, process
 
 ### Consideraciones
 - La web en Vercel sigue funcionando sin cambios
 - localStorage se mantiene dentro del perfil del webview de Tauri
-
-### Dependencias técnicas
-- Rust toolchain
-- Tauri v2
-- WebKitGTK (Linux) / WebView2 (Windows)
 
 ---
 

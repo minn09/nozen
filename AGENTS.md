@@ -34,7 +34,7 @@ When performing this actions, ALWAYS invoke the corresponding skill FIRST:
 | Field       | Value                                            |
 | ----------- | ------------------------------------------------ |
 | Name        | nozen                                            |
-| Description | Personal daily planner with Diary, Notes & Daily Tasks |
+| Description | Personal daily planner: Diary with mood tracking, Notes, Daily Tasks, Zen mode, and Tauri desktop |
 | Type        | Next.js 16 App Router                          |
 | Platform   | Web (PWA-ready)                                |
 
