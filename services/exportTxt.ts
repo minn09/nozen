@@ -1,5 +1,7 @@
+import type { DayMetadata } from "@/types/diary";
+
 export function exportToTxt(
-	metadata: Record<string, any>,
+	metadata: Record<string, DayMetadata>,
 	notes: Record<string, string>,
 ) {
 	const lines: string[] = [];

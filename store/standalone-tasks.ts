@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { generateId } from "@/utils/id";
 
 const STORAGE_KEY = "standalone-tasks:v1";
 
@@ -17,16 +18,9 @@ interface StandaloneTasksState {
 	deleteTask: (taskId: string) => void;
 }
 
-const generateId = () => {
-	if (typeof crypto !== "undefined" && crypto.randomUUID) {
-		return crypto.randomUUID();
-	}
-	return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-};
-
 export const useStandaloneTasksStore = create<StandaloneTasksState>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			tasks: [],
 
 			addTask: (text) => {
