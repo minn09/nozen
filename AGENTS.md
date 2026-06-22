@@ -33,7 +33,7 @@ When performing this actions, ALWAYS invoke the corresponding skill FIRST:
 
 | Field       | Value                                            |
 | ----------- | ------------------------------------------------ |
-| Name        | daily-agenda-app                                 |
+| Name        | nozen                                            |
 | Description | Personal daily planner with Diary, Notes & Daily Tasks |
 | Type        | Next.js 16 App Router                          |
 | Platform   | Web (PWA-ready)                                |

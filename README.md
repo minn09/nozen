@@ -1,4 +1,4 @@
-# Daily Agenda App
+# Nozen
 
 Personal daily planner with three main sections:
 
