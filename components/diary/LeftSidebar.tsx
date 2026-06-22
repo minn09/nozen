@@ -179,10 +179,9 @@ export function LeftSidebar() {
 								onSelect={handleDateSelect}
 								locale={es}
 								modifiers={{ hasEntry: datesWithEntries }}
-								modifiersStyles={{
-									hasEntry: {
-										fontWeight: "600",
-									},
+								modifiersClassNames={{
+									hasEntry:
+										"bg-chart-2/30 text-chart-2 font-semibold rounded-full",
 								}}
 								className="w-full border-0"
 							/>
