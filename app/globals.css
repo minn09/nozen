@@ -32,6 +32,11 @@
 	--sidebar-accent-foreground: oklch(0.15 0 0);
 	--sidebar-border: oklch(0.88 0 0);
 	--sidebar-ring: oklch(0.6 0 0);
+	--chart-1: oklch(0.546 0.245 262.881);
+	--chart-2: oklch(0.627 0.194 149.214);
+	--chart-3: oklch(0.719 0.202 79.198);
+	--chart-4: oklch(0.577 0.245 301.884);
+	--chart-5: oklch(0.579 0.245 27.325);
 }
 
 .dark {

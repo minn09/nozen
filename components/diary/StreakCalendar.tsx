@@ -111,15 +111,19 @@ export function StreakCalendar() {
 								key={`day-${day}`}
 								onClick={() => setCurrentDate(new Date(year, month, day))}
 								className={cn(
-									"relative h-8 w-full text-xs flex items-center justify-center rounded-full transition-colors",
+									"relative h-8 w-full text-xs flex items-center justify-center rounded-full transition-colors font-medium",
 									hasEntry(day)
-										? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium"
+										? "bg-chart-2/80 text-white"
 										: "text-muted-foreground/60",
 									isSelected(day) &&
-										"ring-2 ring-primary ring-offset-1 ring-offset-background",
+										hasEntry(day) &&
+										"bg-chart-2 ring-2 ring-primary ring-offset-1 ring-offset-background",
+									isSelected(day) &&
+										!hasEntry(day) &&
+										"bg-primary/10 ring-2 ring-primary ring-offset-1 ring-offset-background",
 									isToday(day) &&
 										!isSelected(day) &&
-										"ring-2 ring-blue-400 ring-offset-1 ring-offset-background",
+										"ring-2 ring-chart-2 ring-offset-1 ring-offset-background",
 								)}
 							>
 								{day}
