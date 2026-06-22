@@ -11,9 +11,9 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev",
-		"lint": "node node_modules/@biomejs/biome/bin/biome lint .",
-		"format": "node node_modules/@biomejs/biome/bin/biome format --write .",
-		"check": "node node_modules/@biomejs/biome/bin/biome check --write .",
+		"lint": "biome lint .",
+		"format": "biome format --write .",
+		"check": "biome check --write .",
 		"start": "next start",
 		"prepare": "husky",
 		"dev:tauri": "BUILD_FOR_TAURI=true next dev -H 127.0.0.1",

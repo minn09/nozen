@@ -68,14 +68,14 @@ bun run dev
 # Build production
 bun run build
 
-# Lint (Biome)
-bun run lint
+# Lint (Biome — usar pnpm por compatibilidad con Windows)
+pnpm run lint
 
 # Format (Biome)
-bun run format
+pnpm run format
 
 # Validate all (lint + format + check)
-bun run check
+pnpm run check
 
 # Start production
 bun run start
