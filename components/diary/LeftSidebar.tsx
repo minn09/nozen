@@ -14,22 +14,21 @@ import {
 	Trash2,
 	Upload,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { es } from "react-day-picker/locale";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarPrimitive } from "@/components/ui/calendar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { exportToJson, exportToTxtFile } from "@/services/export";
 import { importFromJson } from "@/services/import";
 import { useDiaryStore } from "@/store/diary";
-import type { Note } from "@/store/note";
 import { useNoteStore } from "@/store/note";
 import { useStandaloneTasksStore } from "@/store/standalone-tasks";
 import { useUIStore } from "@/store/ui";
 import { useUserPreferencesStore } from "@/store/user-preferences";
+import type { Note } from "@/types/note";
+import { StreakCalendar } from "./StreakCalendar";
 
 export function LeftSidebar() {
 	const { leftSidebarOpen, setLeftSidebarOpen, isMobile } = useUIStore();
@@ -46,6 +45,8 @@ export function LeftSidebar() {
 		newNote: newNoteStore,
 		deleteNote,
 	} = useNoteStore();
+
+	const { tasks: standaloneTasks } = useStandaloneTasksStore();
 
 	const handleNoteClick = (noteId: string) => {
 		setActiveNote(noteId);
@@ -85,10 +86,10 @@ export function LeftSidebar() {
 					data.standaloneNotes.forEach((n) => {
 						notesMap[n.id] = n;
 					});
-					useNoteStore.getState().setState({ notes: notesMap });
+					useNoteStore.setState({ notes: notesMap });
 				}
 				if (data.standaloneTasks?.length > 0) {
-					useStandaloneTasksStore.getState().setState({
+					useStandaloneTasksStore.setState({
 						tasks: data.standaloneTasks,
 					});
 				}
@@ -99,28 +100,16 @@ export function LeftSidebar() {
 		event.target.value = "";
 	};
 
-	const datesWithEntries = useMemo(() => {
-		const dates: Date[] = [];
-		for (const key of Object.keys(noteContent)) {
-			if (!noteContent[key]?.trim()) continue;
-			const [y, m, d] = key.split("-").map(Number);
-			dates.push(new Date(y, m - 1, d));
-		}
-		return dates;
-	}, [noteContent]);
-
-	const handleDateSelect = (date: Date | undefined) => {
-		if (!date) return;
-		setCurrentDate(date);
+	const handleDateSelect = (date: Date) => {
 		setActiveNote(null);
 		if (isMobile) setLeftSidebarOpen(false);
 	};
 
 	return (
 		<motion.aside
-			initial={{ width: 0, opacity: 0, x: isMobile ? -300 : 0 }}
+			initial={{ width: 0, opacity: 0, x: isMobile ? -340 : 0 }}
 			animate={{
-				width: 300,
+				width: 340,
 				opacity: 1,
 				x: 0,
 				position: isMobile ? "fixed" : "relative",
@@ -130,7 +119,7 @@ export function LeftSidebar() {
 			exit={{
 				width: 0,
 				opacity: 0,
-				x: isMobile ? -300 : 0,
+				x: isMobile ? -340 : 0,
 				transition: { duration: 0.2 },
 			}}
 			transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -173,18 +162,7 @@ export function LeftSidebar() {
 					</button>
 					{showCalendar && (
 						<div className="px-1">
-							<CalendarPrimitive
-								mode="single"
-								selected={currentDate}
-								onSelect={handleDateSelect}
-								locale={es}
-								modifiers={{ hasEntry: datesWithEntries }}
-								modifiersClassNames={{
-									hasEntry:
-										"bg-chart-2/30 text-chart-2 font-semibold rounded-full",
-								}}
-								className="w-full border-0"
-							/>
+							<StreakCalendar onDateSelect={handleDateSelect} />
 						</div>
 					)}
 				</div>

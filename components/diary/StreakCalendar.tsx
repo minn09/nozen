@@ -1,137 +1,90 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { es } from "react-day-picker/locale";
+import { Calendar } from "@/components/ui/calendar";
 import { useDiaryStore } from "@/store/diary";
-import { cn } from "@/utils";
 
-const WEEKDAYS = ["L", "M", "Mi", "J", "V", "S", "D"];
+type StreakCalendarProps = {
+	onDateSelect?: (date: Date) => void;
+};
 
-function getMonthGrid(year: number, month: number) {
-	const firstDay = new Date(year, month, 1);
-	const lastDay = new Date(year, month + 1, 0);
-	const startOffset = firstDay.getDay();
-	const daysInMonth = lastDay.getDate();
-
-	const days: (number | null)[] = [];
-	for (let i = 0; i < (startOffset + 6) % 7; i++) {
-		days.push(null);
-	}
-	for (let d = 1; d <= daysInMonth; d++) {
-		days.push(d);
-	}
-	return days;
-}
-
-function getDateKeyFromParts(year: number, month: number, day: number): string {
-	return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
-
-export function StreakCalendar() {
+export function StreakCalendar({ onDateSelect }: StreakCalendarProps) {
 	const { noteContent, currentDate, setCurrentDate } = useDiaryStore();
-	const [viewDate, setViewDate] = useState(() => new Date());
+	const [month, setMonth] = useState<Date>(() => new Date());
 
-	const year = viewDate.getFullYear();
-	const month = viewDate.getMonth();
-	const today = new Date();
+	const datesWithEntries = useMemo(() => {
+		const dates: Date[] = [];
+		for (const [key, content] of Object.entries(noteContent)) {
+			if (!content?.trim()) continue;
+			const parts = key.split("-").map(Number);
+			if (parts.length < 3) continue;
+			const y = parts[0]!,
+				m = parts[1]!,
+				d = parts[2]!;
+			dates.push(new Date(y, m - 1, d));
+		}
+		return dates;
+	}, [noteContent]);
 
-	const grid = useMemo(() => getMonthGrid(year, month), [year, month]);
+	const goToToday = useCallback(() => {
+		const today = new Date();
+		setCurrentDate(today);
+		setMonth(today);
+	}, [setCurrentDate]);
 
-	const entries = useMemo(
-		() => new Set(Object.keys(noteContent)),
-		[noteContent],
-	);
-
-	const monthName = viewDate.toLocaleDateString("es-ES", {
-		month: "long",
-		year: "numeric",
-	});
-
-	const prevMonth = () =>
-		setViewDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1));
-	const nextMonth = () =>
-		setViewDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
-
-	const isToday = (d: number) =>
-		d === today.getDate() &&
-		month === today.getMonth() &&
-		year === today.getFullYear();
-
-	const isSelected = (d: number) =>
-		d === currentDate.getDate() &&
-		month === currentDate.getMonth() &&
-		year === currentDate.getFullYear();
-
-	const hasEntry = (day: number) =>
-		entries.has(getDateKeyFromParts(year, month, day));
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if (
+				e.key === "t" &&
+				!["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)
+			) {
+				e.preventDefault();
+				goToToday();
+			}
+		};
+		window.addEventListener("keydown", handler);
+		return () => window.removeEventListener("keydown", handler);
+	}, [goToToday]);
 
 	return (
-		<Card>
-			<CardHeader className="px-4 py-3">
-				<div className="flex items-center justify-between w-full">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={prevMonth}
-						className="h-7 w-7"
-					>
-						<ChevronLeft className="w-4 h-4" />
-					</Button>
-					<CardTitle className="text-sm font-medium capitalize">
-						{monthName}
-					</CardTitle>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={nextMonth}
-						className="h-7 w-7"
-					>
-						<ChevronRight className="w-4 h-4" />
-					</Button>
-				</div>
-			</CardHeader>
-			<CardContent className="px-4 pb-4 pt-0">
-				<div className="grid grid-cols-7 gap-1">
-					{WEEKDAYS.map((wd) => (
-						<div
-							key={wd}
-							className="text-center text-xs text-muted-foreground/50 h-6 flex items-center justify-center"
-						>
-							{wd}
-						</div>
-					))}
-					{grid.map((day, i) =>
-						day === null ? (
-							<div key={`empty-${i}`} className="h-8" />
-						) : (
-							<button
-								type="button"
-								key={`day-${day}`}
-								onClick={() => setCurrentDate(new Date(year, month, day))}
-								className={cn(
-									"relative h-8 w-full text-xs flex items-center justify-center rounded-full transition-colors font-medium",
-									hasEntry(day)
-										? "bg-chart-2/80 text-white"
-										: "text-muted-foreground/60",
-									isSelected(day) &&
-										hasEntry(day) &&
-										"bg-chart-2 ring-2 ring-primary ring-offset-1 ring-offset-background",
-									isSelected(day) &&
-										!hasEntry(day) &&
-										"bg-primary/10 ring-2 ring-primary ring-offset-1 ring-offset-background",
-									isToday(day) &&
-										!isSelected(day) &&
-										"ring-2 ring-chart-2 ring-offset-1 ring-offset-background",
-								)}
-							>
-								{day}
-							</button>
-						),
-					)}
-				</div>
-			</CardContent>
-		</Card>
+		<Calendar
+			mode="single"
+			selected={currentDate}
+			onSelect={(date) => {
+				if (!date) return;
+				setCurrentDate(date);
+				onDateSelect?.(date);
+			}}
+			month={month}
+			onMonthChange={setMonth}
+			locale={es}
+			modifiers={{
+				hasEntry: datesWithEntries,
+			}}
+			// 1. ANULACIÓN INMORTAL DE BORDES VÍA ESTILOS EN LÍNEA (Anula cualquier CSS externo)
+			styles={{
+				day: { border: "none", boxShadow: "none", outline: "none" },
+			}}
+			classNames={{
+				// Forzamos forma redonda exacta e invariable
+				day: "h-9 w-9 p-0 flex items-center justify-center m-auto !rounded-full transition-colors !border-0 !border-none !outline-none !shadow-none",
+
+				// DÍA SELECCIONADO: Fondo blanco sólido sin rastro de bordes
+				selected:
+					"bg-white text-black font-bold hover:bg-white focus:bg-white !border-0 !border-none !rounded-full h-9 w-9 !shadow-none",
+
+				// DÍA DE HOY
+				today:
+					"text-amber-500 font-semibold !border-0 !border-none !shadow-none",
+			}}
+			modifiersClassNames={{
+				// DÍA CON DATOS: Círculo gris liso, absolutamente sin bordes
+				hasEntry:
+					"bg-white/20 text-white !border-0 !border-none h-9 w-9 !rounded-full !shadow-none",
+			}}
+			// Separación física entre los círculos
+			className="w-full border-0 [&_td]:p-1 [&_td>button]:!rounded-full [&_td>button]:!border-none [&_td>button]:!shadow-none"
+		/>
 	);
 }
